@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_desc">CPU, GPU, RAM, bộ nhớ, pin, mạng</string>
+
+    <string name="main_howto">1) Bấm \"Bật cập nhật\".\n2) Nhấn giữ màn hình chính → Widget → SysWidget.</string>
+    <string name="btn_start_updates">Bật cập nhật</string>
+    <string name="btn_stop">Tắt</string>
+    <string name="btn_start_popup">Bật cửa sổ nổi</string>
+    <string name="btn_usage_access">Cấp quyền xem danh sách app</string>
+    <string name="btn_settings">Cài đặt</string>
+    <string name="toast_grant_overlay">Cấp quyền \"Hiển thị trên ứng dụng khác\" rồi bấm lại</string>
+
+    <string name="label_storage">Bộ nhớ</string>
+    <string name="label_battery">Pin</string>
+    <string name="label_network">Mạng</string>
+    <string name="label_temp">Nhiệt độ</string>
+    <string name="chart_net">Mạng tải xuống</string>
+    <string name="chart_temp">Nhiệt độ</string>
+
+    <string name="cpu_real">Tải thực</string>
+    <string name="cpu_est">Ước lượng theo xung</string>
+    <string name="cores_fmt">%d nhân</string>
+    <string name="gpu_unreadable">Máy không cho đọc</string>
+    <string name="charging">Đang sạc</string>
+    <string name="discharging">Xả pin</string>
+    <string name="temp_batt_fmt">Pin %1$.0f°C</string>
+    <string name="uptime_fmt">Bật %1$dh%2$02dm</string>
+
+    <string name="ad_loaded">AdMob: đã tải quảng cáo</string>
+    <string name="ad_error_fmt">AdMob lỗi %1$d: %2$s</string>
+    <string name="ad_inter_error_fmt">AdMob toàn màn hình lỗi %1$d: %2$s</string>
+
+    <string name="overlay_no_permission">Chưa cấp quyền hiển thị trên ứng dụng khác</string>
+    <string name="overlay_refresh">Làm mới</string>
+    <string name="overlay_close">Đóng cửa sổ</string>
+    <string name="overlay_kill">Tắt</string>
+    <string name="overlay_killed_fmt">Đã gửi lệnh tắt %1$s</string>
+    <string name="overlay_need_usage">Cần cấp quyền \"Truy cập dữ liệu sử dụng\" để xem danh sách app.</string>
+    <string name="overlay_open_settings">Mở cài đặt quyền</string>
+    <string name="overlay_no_apps">Chưa có dữ liệu app dùng gần đây.</string>
+    <string name="ago_now">vừa dùng</string>
+    <string name="ago_min_fmt">%1$d phút trước</string>
+    <string name="ago_hour_fmt">%1$d giờ trước</string>
+
+    <string name="notif_channel">Thông số hệ thống</string>
+    <string name="notif_channel_bar">Thông số trên thanh trạng thái</string>
+    <string name="notif_widget_title">SysWidget đang cập nhật widget</string>
+    <string name="notif_overlay_title">Cửa sổ nổi SysWidget đang bật</string>
+
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_section_popup">Cửa sổ nổi</string>
+    <string name="settings_section_status">Thanh trạng thái</string>
+    <string name="settings_mini_charts">Hiện biểu đồ mini trong cửa sổ nổi</string>
+    <string name="settings_bubble_extra">Hiện mạng và nhiệt độ ở bong bóng cửa sổ nổi</string>
+    <string name="settings_status_bar">Hiện thông số trên thanh trạng thái</string>
+    <string name="settings_status_metric_fmt">Thanh trạng thái hiện: %1$s</string>
+    <string name="settings_status_hint">Biểu tượng trên thanh trạng thái hiện một chỉ số. Kéo thanh thông báo xuống để xem tất cả.</string>
+    <string name="metric_cpu">CPU</string>
+    <string name="metric_ram">RAM</string>
+    <string name="metric_net">Tốc độ tải xuống</string>
+    <string name="metric_temp">Nhiệt độ</string>
+</resources>

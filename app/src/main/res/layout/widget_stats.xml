@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- CPU -->
+    <TextView
+        android:id="@+id/tvCpu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CPU"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/pbCpu"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar" />
+    <TextView
+        android:id="@+id/tvCpuSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+
+    <!-- GPU -->
+    <TextView
+        android:id="@+id/tvGpu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="GPU"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/pbGpu"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar" />
+    <TextView
+        android:id="@+id/tvGpuSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+
+    <!-- RAM -->
+    <TextView
+        android:id="@+id/tvRam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="RAM"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/pbRam"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar" />
+    <TextView
+        android:id="@+id/tvRamSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+
+    <!-- Bộ nhớ trong -->
+    <TextView
+        android:id="@+id/tvStorage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Bộ nhớ"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/pbStorage"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar" />
+    <TextView
+        android:id="@+id/tvStorageSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+
+    <!-- Pin -->
+    <TextView
+        android:id="@+id/tvBatt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="Pin"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+    <ProgressBar
+        android:id="@+id/pbBatt"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar" />
+    <TextView
+        android:id="@+id/tvBattSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+
+    <!-- Mạng + footer -->
+    <TextView
+        android:id="@+id/tvNet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:maxLines="1"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/tvFooter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="#8A94A0"
+        android:textSize="10sp" />
+</LinearLayout>
