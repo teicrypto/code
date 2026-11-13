@@ -84,11 +84,24 @@
     <string name="pair_fail_fmt">Pairing failed: %1$s</string>
     <string name="connect_ok">Connected</string>
     <string name="connect_fail">Could not connect. Is Wi-Fi and Wireless debugging on?</string>
-    <string name="pair_overlay_wait">Open \"Pair device with pairing code\" in Wireless debugging. Looking for the pairing port…</string>
-    <string name="pair_overlay_enter">Pairing port found. Type the 6-digit code from the dialog below:</string>
-    <string name="pair_overlay_busy">Pairing…</string>
-    <string name="pair_overlay_btn">Pair</string>
     <string name="adb_paired_disconnected">ADB: paired (saved), not connected. Turn on Wi-Fi and Wireless debugging, then tap Connect.</string>
+    <string name="setup_title">Set up per-app usage</string>
+    <string name="setup_intro">Follow these 4 steps once (about 1 minute). Steps get a check mark automatically.</string>
+    <string name="step1_title">1. Turn on Developer options</string>
+    <string name="step1_desc">Open About phone and tap \"Build number\" 7 times. Skip if already on.</string>
+    <string name="step1_btn">Open About phone</string>
+    <string name="step2_title">2. Turn on Wireless debugging</string>
+    <string name="step2_desc">Connect to Wi-Fi first. In Developer options, turn on Wireless debugging and tap Allow if asked.</string>
+    <string name="step2_btn">Open Developer options</string>
+    <string name="step3_title">3. Pair this phone</string>
+    <string name="step3_desc">Tap the button below. Then open Wireless debugging and tap \"Pair device with pairing code\". Keep that dialog open, pull down the notification shade, tap \"Enter code\" and type the 6 digits.</string>
+    <string name="step3_btn">Start pairing</string>
+    <string name="step3_need_notif">Allow notifications, then tap Start pairing again</string>
+    <string name="step4_title">4. Connect</string>
+    <string name="step4_desc">Connects by itself after pairing. Tap if it does not.</string>
+    <string name="setup_done">All set! Go back to see per-app CPU and RAM.</string>
+    <string name="btn_setup">Step-by-step setup</string>
+
 
 
 
@@ -105,4 +118,33 @@
     <string name="metric_ram">RAM</string>
     <string name="metric_net">Download speed</string>
     <string name="metric_temp">Temperature</string>
+    <string name="a11y_desc">Only used during setup to read the pairing code in Settings and pair automatically. Nothing is collected or sent.</string>
+    <string name="step3_btn_auto">Auto pair</string>
+    <string name="step3_need_a11y">Turn on SysWidget in Accessibility, then come back and tap Auto pair</string>
+    <string name="step3_desc_auto">Tap Auto pair. The app opens Wireless debugging and pairs by itself. First time it asks you to enable SysWidget in Accessibility.</string>
+    <string name="pop_title">Task Manager</string>
+    <string name="tab_perf">Performance</string>
+    <string name="tab_proc">Processes</string>
+    <string name="tab_conn">Connect</string>
+    <string name="col_name">Name</string>
+    <string name="proc_need_adb">Per-app CPU/RAM needs a connection. Open the Connect tab.</string>
+    <string name="proc_gpu_note">Per-app GPU is not provided by Android.</string>
+    <string name="hw_title">Hardware</string>
+    <string name="cores_need_adb">Per-core data needs a connection (Connect tab).</string>
+    <string name="conn_pc_title">Method A: via computer (once)</string>
+    <string name="conn_pc_desc">Plug the phone into a PC with USB debugging on and run: adb tcpip 5555 . Then tap Connect and choose \"Always allow\" on the phone. Lasts until reboot.</string>
+    <string name="conn_wifi_title">Method B: wireless pairing</string>
+    <string name="conn_wifi_desc">1) Tap Start pairing (opens Wireless debugging). 2) Tap \"Pair device with pairing code\". 3) Type the 6 digits here, it pairs automatically.</string>
+    <string name="conn_start_pair">Start pairing</string>
+    <string name="conn_notif_alt">Pair via notification</string>
+    <string name="btn_pair">Pair</string>
+    <string name="conn_searching">Working…</string>
+    <string name="conn_port_found_fmt">Port found: %1$d. Now type the 6-digit code.</string>
+    <string name="onb_intro">Allow SysWidget to show a floating Task Manager over other apps. Everything (stats, charts, per-app usage, connection) is inside the popup.</string>
+    <string name="onb_overlay_ok">✓ Display over other apps: allowed</string>
+    <string name="onb_overlay_need">Display over other apps: not allowed yet</string>
+    <string name="onb_overlay_btn">Allow display over other apps</string>
+    <string name="onb_open_popup">Open Task Manager popup</string>
+    <string name="onb_stop_popup">Close popup</string>
+    <string name="onb_tip">Tap the small bubble to expand it. In the popup, the Connect tab sets up per-app CPU/RAM.</string>
 </resources>

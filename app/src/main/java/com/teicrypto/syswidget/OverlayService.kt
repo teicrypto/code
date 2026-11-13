@@ -1,13 +1,11 @@
 package com.teicrypto.syswidget
 
 import android.app.ActivityManager
-import android.app.AppOpsManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.app.usage.UsageStatsManager
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
@@ -20,111 +18,198 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
+import android.text.Editable
+import android.text.InputFilter
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import java.util.Locale
 import kotlin.math.abs
 
 /**
- * Cửa sổ nổi kiểu "Task Manager":
- *  - Bong bóng nhỏ hiện CPU/RAM (+ mạng và nhiệt độ nếu bật), kéo thả được, chạm để mở rộng.
- *  - Mở rộng: thông số hệ thống, biểu đồ mini (nếu bật) và danh sách app dùng gần đây, có nút "Tắt".
- * Lưu ý: Android 8+ không cho app thường xem CPU/RAM của TỪNG app khác,
- * nên danh sách dựa trên "thời điểm dùng gần nhất" (UsageStats).
+ * Popup nổi kiểu Task Manager.
+ *  - Thu nhỏ: bong bóng hiện %CPU, nhiệt độ, GPU, FPS.
+ *  - Mở rộng: 3 tab: Hiệu suất (biểu đồ, MHz từng nhân, phần cứng), Tiến trình (CPU/RAM từng app,
+ *    cập nhật 2,5 giây), Kết nối (ADB: cách A qua máy tính, cách B ghép nối không dây, nhập mã ngay trong popup).
+ * CPU/RAM/GPU/FPS chi tiết cần ADB tích hợp; chưa kết nối thì chỉ có số liệu cơ bản.
  */
 class OverlayService : Service() {
+
+    companion object {
+        @Volatile var running = false
+        private const val PERIOD = 2500L
+    }
+
+    private class ProcRow(
+        val root: LinearLayout, val name: TextView, val cpu: TextView, val ram: TextView, val kill: TextView
+    ) { var pkg = "" }
 
     private lateinit var wm: WindowManager
     private lateinit var params: WindowManager.LayoutParams
     private lateinit var root: LinearLayout
     private lateinit var bubble: TextView
     private lateinit var panel: LinearLayout
-    private lateinit var header: TextView
-    private lateinit var list: LinearLayout
     private lateinit var collector: StatsCollector
     private val handler = Handler(Looper.getMainLooper())
     private var expanded = false
     private var added = false
-    private var posX = 0
-    private var posY = 0
+    private var tab = 0
+    private var savedY = -1
+    private var fetching = false
     private val density by lazy { resources.displayMetrics.density }
 
-    // Biểu đồ mini (null khi tắt trong Cài đặt)
-    private var cpuC: LineChartView? = null
-    private var ramC: LineChartView? = null
-    private var netC: LineChartView? = null
-    private var tempC: LineChartView? = null
+    private lateinit var cpuC: LineChartView
+    private lateinit var gpuC: LineChartView
+    private lateinit var ramC: LineChartView
+    private lateinit var netC: LineChartView
+    private lateinit var tempC: LineChartView
+    private lateinit var coresText: TextView
+    private lateinit var hwText: TextView
 
-    // CPU/RAM từng app (ADB tích hợp)
-    private lateinit var appCpu: TextView
-    private var tickCount = 0
-    private var fetching = false
+    private lateinit var procHint: TextView
+    private lateinit var hdrCpu: TextView
+    private lateinit var hdrRam: TextView
+    private lateinit var procBox: LinearLayout
+    private val procRows = ArrayList<ProcRow>()
+    private var sortRam = false
+    private var cpuMap: Map<String, Float> = emptyMap()
+    private var ramMap: Map<String, Long> = emptyMap()
+    private val labels = HashMap<String, String>()
 
-    // Giữ tham chiếu mạnh, vì SharedPreferences chỉ giữ listener bằng weak reference
-    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> rebuild() }
+    private lateinit var connStatus: TextView
+    private lateinit var portEt: EditText
+    private lateinit var codeEt: EditText
+    private lateinit var connResult: TextView
+    @Volatile private var pairing = false
+    @Volatile private var finding = false
+
+    private val tabViews = ArrayList<TextView>()
+    private val tabContents = ArrayList<View>()
+
+    private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, k ->
+        if (k == Prefs.LANG) rebuild()
+    }
 
     private fun dp(v: Int) = (v * density).toInt()
+    private fun str(id: Int, vararg a: Any): String = LocaleHelper.wrap(this).getString(id, *a)
 
-    private fun str(id: Int, vararg args: Any): String = LocaleHelper.wrap(this).getString(id, *args)
+    // ---------------- Vòng lấy số liệu ----------------
 
     private val tick = object : Runnable {
         override fun run() {
-            val s = collector.collect()
-            fun p(x: Int) = if (x >= 0) "$x%" else "N/A"
-            val line1 = "CPU ${p(s.cpuPct)} · RAM ${p(s.ramPct)}"
-            bubble.text = if (Prefs.bubbleExtra(this@OverlayService))
-                "$line1\n↓${shortSpeed(s.downBps)}/s · ${s.tempC.toInt()}°C"
-            else line1
-
-            cpuC?.add(s.cpuPct.coerceAtLeast(0).toFloat(), p(s.cpuPct))
-            ramC?.add(s.ramPct.toFloat(), p(s.ramPct))
-            netC?.add(s.downBps.toFloat(), "${shortSpeed(s.downBps)}/s")
-            tempC?.add(s.tempC.toFloat(), "${s.tempC.toInt()}°C")
-
-            if (expanded && tickCount++ % 2 == 0) refreshAppCpu() // 4 giây/lần
-
-            if (expanded) {
-                fun row(label: String, v: String) = label.padEnd(8) + v
-                header.text = listOf(
-                    row("CPU", "${p(s.cpuPct)}  ${s.cpuInfo}"),
-                    row("GPU", "${p(s.gpuPct)}  ${s.gpuInfo}"),
-                    row("RAM", "${p(s.ramPct)}  ${s.ramInfo}"),
-                    row(str(R.string.label_temp), s.tempInfo),
-                    row(str(R.string.label_battery), "${p(s.battPct)}  ${s.battInfo}"),
-                    row(str(R.string.label_network), s.netInfo),
-                    s.uptime
-                ).joinToString("\n")
+            if (!added) return
+            if (fetching) {
+                handler.postDelayed(this, PERIOD)
+                return
             }
-            handler.postDelayed(this, 2000)
+            fetching = true
+            val wantProc = expanded && tab == 1
+            Thread {
+                val ctx = applicationContext
+                val s = collector.collect()
+                var snap: PrivShell.Snap? = null
+                var cpuByPkg: Map<String, Float>? = null
+                if (PrivShell.connect(ctx)) {
+                    snap = PrivShell.snapshot(ctx)
+                    if (wantProc) cpuByPkg = PrivShell.cpuByPkg(ctx)
+                }
+                handler.post {
+                    fetching = false
+                    if (added) apply(s, snap, cpuByPkg)
+                    if (added) handler.postDelayed(this, PERIOD)
+                }
+            }.start()
         }
     }
 
+    private fun kick() {
+        handler.removeCallbacks(tick)
+        handler.post(tick)
+    }
+
+    private fun apply(s: Stats, snap: PrivShell.Snap?, cpuByPkg: Map<String, Float>?) {
+        fun p(x: Int) = if (x >= 0) "$x%" else "N/A"
+        val cpuPct = if (snap != null && snap.total >= 0) snap.total else s.cpuPct
+        val cpuT = snap?.cpuTemp ?: s.tempC
+        val gpuPct = snap?.gpuPct ?: s.gpuPct.takeIf { it >= 0 }
+        val gpuT = snap?.gpuTemp
+        val fps = snap?.fps
+
+        val gpuPart = when {
+            gpuT != null -> "${gpuT.toInt()}°C"
+            gpuPct != null -> "$gpuPct%"
+            else -> "--"
+        }
+        bubble.text = "CPU ${p(cpuPct)} · ${cpuT.toInt()}°C\nGPU $gpuPart · ${fps?.toString() ?: "--"} FPS"
+
+        if (snap != null) {
+            ramMap = snap.ramKb
+        }
+        if (cpuByPkg != null) cpuMap = cpuByPkg
+
+        val connected = PrivShell.state() == PrivShell.State.READY
+        updateConn(connected)
+
+        if (!expanded) return
+
+        // Hiệu suất
+        val mhzAvg = snap?.mhz?.values?.takeIf { it.isNotEmpty() }?.average()?.toInt()
+        cpuC.add(cpuPct.coerceAtLeast(0).toFloat(),
+            p(cpuPct) + (mhzAvg?.let { "  ${it} MHz" } ?: ""))
+        val gpuLabel = listOfNotNull(
+            gpuPct?.let { "$it%" }, snap?.gpuMhz?.let { "$it MHz" }, gpuT?.let { "${it.toInt()}°C" }
+        ).joinToString(" · ").ifEmpty { "N/A" }
+        gpuC.add((gpuPct ?: 0).toFloat(), gpuLabel)
+        ramC.add(s.ramPct.toFloat(), "${p(s.ramPct)}  ${s.ramInfo}")
+        netC.add(s.downBps.toFloat(), s.netInfo)
+        tempC.add(cpuT.toFloat(), "CPU ${cpuT.toInt()}°C" + (gpuT?.let { " · GPU ${it.toInt()}°C" } ?: ""))
+
+        if (snap != null && snap.cores.isNotEmpty()) {
+            val sb = StringBuilder()
+            for (i in snap.cores.indices) {
+                sb.append(String.format(Locale.US, "C%d %3d%% %4dMHz", i, snap.cores[i], snap.mhz[i] ?: 0))
+                sb.append(if (i % 2 == 0) "   " else "\n")
+            }
+            coresText.text = sb.toString().trimEnd()
+        } else {
+            coresText.text = str(R.string.cores_need_adb)
+        }
+
+        if (tab == 1) renderProc(connected)
+    }
+
+    // ---------------- Vòng đời ----------------
+
     override fun onCreate() {
         super.onCreate()
-        startAsForeground() // phải gọi trước, kể cả khi sắp tự dừng
+        startAsForeground()
         if (!Settings.canDrawOverlays(this)) {
             Toast.makeText(this, str(R.string.overlay_no_permission), Toast.LENGTH_LONG).show()
             stopSelf()
             return
         }
+        running = true
         collector = StatsCollector(this)
         wm = getSystemService(WINDOW_SERVICE) as WindowManager
-        posX = dp(8)
-        posY = dp(120)
         buildUi()
-        handler.post(tick)
+        kick()
         Prefs.sp(this).registerOnSharedPreferenceChangeListener(prefListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     override fun onDestroy() {
-        handler.removeCallbacks(tick)
+        running = false
+        finding = false
+        handler.removeCallbacksAndMessages(null)
         Prefs.sp(this).unregisterOnSharedPreferenceChangeListener(prefListener)
         if (added) {
             try { wm.removeView(root) } catch (e: Exception) { }
@@ -135,12 +220,16 @@ class OverlayService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    /** Dựng lại giao diện khi đổi cài đặt (ngôn ngữ, biểu đồ mini, bong bóng...). */
     private fun rebuild() {
         if (!added) return
+        val x = params.x
+        val y = params.y
         try { wm.removeView(root) } catch (e: Exception) { }
         added = false
         buildUi()
+        params.x = x
+        params.y = y
+        wm.updateViewLayout(root, params)
     }
 
     // ---------------- UI ----------------
@@ -150,21 +239,83 @@ class OverlayService : Service() {
         cornerRadius = dp(radiusDp).toFloat()
     }
 
-    private fun mini(title: String, color: String, max: Float?, min: Float) =
-        LineChartView(this, title, Color.parseColor(color), max, min, true)
-
-    private fun chartRow(a: LineChartView, b: LineChartView): LinearLayout {
-        val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        for (c in listOf(a, b)) {
-            row.addView(
-                c,
-                LinearLayout.LayoutParams(0, dp(64), 1f).apply { setMargins(dp(2), dp(2), dp(2), dp(2)) }
-            )
+    private fun tv(text: String, size: Float, color: String, bold: Boolean = false, mono: Boolean = false) =
+        TextView(this).apply {
+            this.text = text
+            textSize = size
+            setTextColor(Color.parseColor(color))
+            if (bold) setTypeface(null, Typeface.BOLD)
+            if (mono) typeface = Typeface.MONOSPACE
         }
-        return row
+
+    private fun button(label: String, bg: String, onClick: () -> Unit) = TextView(this).apply {
+        text = label
+        textSize = 12f
+        setTextColor(Color.WHITE)
+        gravity = Gravity.CENTER
+        setPadding(dp(12), dp(8), dp(12), dp(8))
+        background = rounded(bg, 8)
+        setOnClickListener { onClick() }
+    }
+
+    private fun chart(title: String, color: String, max: Float?, min: Float = 0f) =
+        LineChartView(this, title, Color.parseColor(color), max, min, false).also {
+            it.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(92)
+            ).apply { setMargins(0, dp(3), 0, dp(3)) }
+        }
+
+    private fun attachDrag(v: View, onTap: (() -> Unit)?) {
+        v.setOnTouchListener(object : View.OnTouchListener {
+            var sx = 0
+            var sy = 0
+            var tx = 0f
+            var ty = 0f
+            var moved = false
+            override fun onTouch(view: View, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        sx = params.x; sy = params.y; tx = e.rawX; ty = e.rawY; moved = false
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val dx = (e.rawX - tx).toInt()
+                        val dy = (e.rawY - ty).toInt()
+                        if (abs(dx) > dp(5) || abs(dy) > dp(5)) moved = true
+                        if (moved) {
+                            params.x = sx + dx
+                            params.y = sy + dy
+                            try { wm.updateViewLayout(root, params) } catch (ex: Exception) { }
+                        }
+                    }
+                    MotionEvent.ACTION_UP -> if (!moved) onTap?.invoke()
+                }
+                return true
+            }
+        })
+    }
+
+    private fun hardwareInfo(): String {
+        val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val mi = ActivityManager.MemoryInfo().also { am.getMemoryInfo(it) }
+        val soc = if (Build.VERSION.SDK_INT >= 31) "${Build.SOC_MANUFACTURER} ${Build.SOC_MODEL}" else Build.HARDWARE
+        val dm = resources.displayMetrics
+        @Suppress("DEPRECATION")
+        val hz = try { wm.defaultDisplay.refreshRate.toInt() } catch (e: Exception) { 0 }
+        return listOf(
+            "${Build.MANUFACTURER} ${Build.MODEL}",
+            "SoC: $soc",
+            "Board: ${Build.BOARD}",
+            "CPU: ${Runtime.getRuntime().availableProcessors()} cores · ${Build.SUPPORTED_ABIS.firstOrNull() ?: ""}",
+            "RAM: ${String.format(Locale.US, "%.1f GB", mi.totalMem / 1073741824.0)}",
+            "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
+            "Display: ${dm.widthPixels}x${dm.heightPixels} · ${dm.densityDpi} dpi · $hz Hz"
+        ).joinToString("\n")
     }
 
     private fun buildUi() {
+        tabViews.clear()
+        tabContents.clear()
+        procRows.clear()
         root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
         bubble = TextView(this).apply {
@@ -174,67 +325,193 @@ class OverlayService : Service() {
             gravity = Gravity.CENTER
             setPadding(dp(12), dp(7), dp(12), dp(7))
             background = rounded("#EE111418", 18)
-            text = "…"
+            text = "CPU … \nGPU …"
+            visibility = if (expanded) View.GONE else View.VISIBLE
         }
 
         panel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             visibility = if (expanded) View.VISIBLE else View.GONE
-            background = rounded("#F2111418", 16)
-            setPadding(dp(10), dp(10), dp(10), dp(10))
+            background = rounded("#F5111418", 14)
+            setPadding(dp(8), dp(6), dp(8), dp(8))
         }
-        header = TextView(this).apply {
-            typeface = Typeface.MONOSPACE
-            textSize = 10.5f
-            setTextColor(Color.parseColor("#7CE0C3"))
+
+        // Thanh tiêu đề (kéo được)
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
         }
+        val title = tv(str(R.string.pop_title), 14f, "#FFFFFF", bold = true).apply {
+            setPadding(dp(4), dp(6), dp(4), dp(6))
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        attachDrag(title, null)
+        header.addView(title)
+        header.addView(button("—", "#2A2F36") { toggle() })
+        header.addView(button("✕", "#6B2A2A") { stopSelf() }.apply {
+            (layoutParams as? LinearLayout.LayoutParams)
+        }, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { leftMargin = dp(6) })
         panel.addView(header)
 
-        // Biểu đồ mini
-        val showCharts = Prefs.miniCharts(this)
-        if (showCharts) {
-            val c1 = mini("CPU", "#7CE0C3", 100f, 0f)
-            val c2 = mini("RAM", "#6FA8FF", 100f, 0f)
-            val c3 = mini(str(R.string.metric_net), "#C792EA", null, 0f)
-            val c4 = mini(str(R.string.chart_temp), "#FF7A7A", 80f, 20f)
-            cpuC = c1; ramC = c2; netC = c3; tempC = c4
-            val grid = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(0, dp(6), 0, 0)
+        // Tab
+        val tabs = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val names = listOf(R.string.tab_perf, R.string.tab_proc, R.string.tab_conn)
+        for ((i, n) in names.withIndex()) {
+            val t = tv(str(n), 12.5f, "#8A94A0", bold = true).apply {
+                gravity = Gravity.CENTER
+                setPadding(dp(4), dp(8), dp(4), dp(8))
+                setOnClickListener { showTab(i) }
             }
-            grid.addView(chartRow(c1, c2))
-            grid.addView(chartRow(c3, c4))
-            panel.addView(grid)
-        } else {
-            cpuC = null; ramC = null; netC = null; tempC = null
+            tabViews.add(t)
+            tabs.addView(t, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
         }
+        panel.addView(tabs)
 
-        appCpu = TextView(this).apply {
-            typeface = Typeface.MONOSPACE
-            textSize = 10f
-            setTextColor(Color.parseColor("#F2A65A"))
-            setPadding(0, dp(6), 0, 0)
-        }
-        panel.addView(appCpu)
+        // --- Tab 0: Hiệu suất ---
+        val perf = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        cpuC = chart("CPU", "#7CE0C3", 100f)
+        gpuC = chart("GPU", "#F2A65A", 100f)
+        ramC = chart("RAM", "#6FA8FF", 100f)
+        netC = chart(str(R.string.metric_net), "#C792EA", null)
+        tempC = chart(str(R.string.chart_temp), "#FF7A7A", 80f, 20f)
+        coresText = tv("", 10.5f, "#7CE0C3", mono = true).apply { setPadding(dp(6), dp(2), dp(6), dp(6)) }
+        hwText = tv(hardwareInfo(), 10.5f, "#C9D1D9", mono = true).apply { setPadding(dp(6), dp(2), dp(6), dp(6)) }
+        perf.addView(cpuC)
+        perf.addView(coresText)
+        perf.addView(gpuC)
+        perf.addView(ramC)
+        perf.addView(netC)
+        perf.addView(tempC)
+        perf.addView(tv(str(R.string.hw_title), 12f, "#8A94A0", bold = true).apply { setPadding(dp(6), dp(8), 0, dp(2)) })
+        perf.addView(hwText)
+        tabContents.add(ScrollView(this).apply { addView(perf) })
 
-        val actions = LinearLayout(this).apply {
+        // --- Tab 1: Tiến trình ---
+        val proc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        procHint = tv("", 11.5f, "#F2A65A").apply { setPadding(dp(6), dp(6), dp(6), dp(6)) }
+        proc.addView(procHint)
+        val head = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(8), 0, dp(4))
+            setPadding(dp(4), dp(4), dp(4), dp(4))
         }
-        actions.addView(chip(str(R.string.overlay_refresh), "#2A2F36") { refreshList() })
-        actions.addView(chip(str(R.string.overlay_close), "#6B2A2A") { stopSelf() })
-        panel.addView(actions)
+        head.addView(tv(str(R.string.col_name), 11f, "#8A94A0", bold = true),
+            LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        hdrCpu = tv("", 11f, "#8A94A0", bold = true).apply {
+            gravity = Gravity.END
+            setOnClickListener { sortRam = false; renderProc(PrivShell.state() == PrivShell.State.READY) }
+        }
+        hdrRam = tv("", 11f, "#8A94A0", bold = true).apply {
+            gravity = Gravity.END
+            setOnClickListener { sortRam = true; renderProc(PrivShell.state() == PrivShell.State.READY) }
+        }
+        head.addView(hdrCpu, LinearLayout.LayoutParams(dp(58), LinearLayout.LayoutParams.WRAP_CONTENT))
+        head.addView(hdrRam, LinearLayout.LayoutParams(dp(70), LinearLayout.LayoutParams.WRAP_CONTENT))
+        head.addView(View(this), LinearLayout.LayoutParams(dp(30), 1))
+        proc.addView(head)
+        procBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        for (i in 0 until 30) {
+            val r = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(4), dp(4), dp(4), dp(4))
+                visibility = View.GONE
+            }
+            val n = tv("", 11.5f, "#FFFFFF").apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
+            val c = tv("", 11.5f, "#FFFFFF", mono = true).apply { gravity = Gravity.END; setPadding(0, dp(2), dp(4), dp(2)) }
+            val m = tv("", 11.5f, "#FFFFFF", mono = true).apply { gravity = Gravity.END }
+            val k = tv("✕", 13f, "#FF7A7A", bold = true).apply { gravity = Gravity.CENTER }
+            r.addView(n, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            r.addView(c, LinearLayout.LayoutParams(dp(58), LinearLayout.LayoutParams.WRAP_CONTENT))
+            r.addView(m, LinearLayout.LayoutParams(dp(70), LinearLayout.LayoutParams.WRAP_CONTENT))
+            r.addView(k, LinearLayout.LayoutParams(dp(30), LinearLayout.LayoutParams.WRAP_CONTENT))
+            val row = ProcRow(r, n, c, m, k)
+            k.setOnClickListener {
+                if (row.pkg.isNotEmpty()) {
+                    (getSystemService(ACTIVITY_SERVICE) as ActivityManager).killBackgroundProcesses(row.pkg)
+                    Toast.makeText(this, str(R.string.overlay_killed_fmt, labelOf(row.pkg)), Toast.LENGTH_SHORT).show()
+                }
+            }
+            procRows.add(row)
+            procBox.addView(r)
+        }
+        proc.addView(procBox)
+        proc.addView(tv(str(R.string.proc_gpu_note), 10.5f, "#8A94A0").apply { setPadding(dp(6), dp(8), dp(6), dp(4)) })
+        tabContents.add(ScrollView(this).apply { addView(proc) })
 
-        list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val scroll = ScrollView(this).apply { addView(list) }
-        panel.addView(
-            scroll,
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(if (showCharts) 200 else 260))
-        )
+        // --- Tab 2: Kết nối ---
+        val conn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(4), dp(6), dp(4), dp(6))
+        }
+        connStatus = tv("", 12.5f, "#7CE0C3", bold = true)
+        conn.addView(connStatus)
+
+        conn.addView(tv(str(R.string.conn_pc_title), 13f, "#FFFFFF", bold = true).apply { setPadding(0, dp(12), 0, dp(2)) })
+        conn.addView(tv(str(R.string.conn_pc_desc), 11.5f, "#C9D1D9"))
+        conn.addView(button(str(R.string.btn_adb_connect), "#2A5A4A") { doConnect() }.apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(6) }
+        })
+
+        conn.addView(tv(str(R.string.conn_wifi_title), 13f, "#FFFFFF", bold = true).apply { setPadding(0, dp(14), 0, dp(2)) })
+        conn.addView(tv(str(R.string.conn_wifi_desc), 11.5f, "#C9D1D9"))
+        val bRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(0, dp(6), 0, dp(6))
+        }
+        bRow.addView(button(str(R.string.conn_start_pair), "#2A5A4A") { startPairing() })
+        bRow.addView(button(str(R.string.conn_notif_alt), "#2A2F36") {
+            startForegroundService(Intent(this, PairingService::class.java))
+            openDevSettings()
+        }, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { leftMargin = dp(6) })
+        conn.addView(bRow)
+
+        fun field(hint: String, max: Int) = EditText(this).apply {
+            this.hint = hint
+            setHintTextColor(Color.GRAY)
+            setTextColor(Color.WHITE)
+            textSize = 15f
+            inputType = InputType.TYPE_CLASS_NUMBER
+            filters = arrayOf(InputFilter.LengthFilter(max))
+            background = rounded("#1A1F26", 8)
+            setPadding(dp(10), dp(8), dp(10), dp(8))
+        }
+        portEt = field(str(R.string.hint_port), 5)
+        codeEt = field(str(R.string.hint_code), 6)
+        codeEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if ((s?.length ?: 0) == 6 && portEt.text.isNotEmpty()) doPair()
+            }
+        })
+        val fRow = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        fRow.addView(portEt, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        fRow.addView(codeEt, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { leftMargin = dp(6) })
+        conn.addView(fRow)
+        conn.addView(button(str(R.string.btn_pair), "#2A5A4A") { doPair() }.apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { topMargin = dp(6) }
+        })
+        connResult = tv("", 11.5f, "#F2A65A").apply { setPadding(0, dp(8), 0, 0) }
+        conn.addView(connResult)
+        tabContents.add(ScrollView(this).apply { addView(conn) })
+
+        for (c in tabContents) {
+            panel.addView(c, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(400)))
+        }
 
         root.addView(bubble)
-        root.addView(panel, LinearLayout.LayoutParams(dp(300), LinearLayout.LayoutParams.WRAP_CONTENT))
+        root.addView(panel, LinearLayout.LayoutParams(dp(344), LinearLayout.LayoutParams.WRAP_CONTENT))
 
+        val keepX = if (::params.isInitialized) params.x else dp(8)
+        val keepY = if (::params.isInitialized) params.y else dp(120)
         params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -243,204 +520,169 @@ class OverlayService : Service() {
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = posX
-            y = posY
+            x = keepX
+            y = keepY
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         }
-
-        bubble.setOnTouchListener(object : View.OnTouchListener {
-            var startX = 0
-            var startY = 0
-            var touchX = 0f
-            var touchY = 0f
-            var moved = false
-
-            override fun onTouch(v: View, e: MotionEvent): Boolean {
-                when (e.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        startX = params.x; startY = params.y
-                        touchX = e.rawX; touchY = e.rawY
-                        moved = false
-                    }
-                    MotionEvent.ACTION_MOVE -> {
-                        val dx = (e.rawX - touchX).toInt()
-                        val dy = (e.rawY - touchY).toInt()
-                        if (abs(dx) > dp(5) || abs(dy) > dp(5)) moved = true
-                        if (moved) {
-                            params.x = startX + dx
-                            params.y = startY + dy
-                            posX = params.x
-                            posY = params.y
-                            wm.updateViewLayout(root, params)
-                        }
-                    }
-                    MotionEvent.ACTION_UP -> if (!moved) toggle()
-                }
-                return true
-            }
-        })
+        attachDrag(bubble) { toggle() }
 
         wm.addView(root, params)
         added = true
-        if (expanded) {
-            refreshList()
-            refreshAppCpu()
+        showTab(tab, relayout = false)
+        updateConn(PrivShell.state() == PrivShell.State.READY)
+    }
+
+    private fun showTab(i: Int, relayout: Boolean = true) {
+        tab = i
+        for ((k, v) in tabContents.withIndex()) v.visibility = if (k == i) View.VISIBLE else View.GONE
+        for ((k, t) in tabViews.withIndex()) {
+            t.setTextColor(Color.parseColor(if (k == i) "#7CE0C3" else "#8A94A0"))
+            t.background = if (k == i) rounded("#1F2A2A", 8) else null
         }
+        applyFocus()
+        if (relayout) kick()
     }
 
-    private var ramText = ""
-    private var appTick = 0
-
-    private fun refreshAppCpu() {
-        if (!::appCpu.isInitialized) return
-        if (fetching) return
-        fetching = true
-        Thread {
-            val ctx = applicationContext
-            val pm = packageManager
-            val connected = PrivShell.connect(ctx) // tự kết nối lại nếu đã từng ghép nối
-            var cpu: String? = null
-            if (connected) {
-                cpu = PrivShell.topCpu(ctx, 6)?.joinToString("\n") { PrivShell.format(pm, it) }
-                if (appTick % 3 == 0) { // RAM nặng hơn nên 3 lần cập nhật mới lấy một lần
-                    PrivShell.topRam(ctx, 6)?.let { l ->
-                        ramText = l.joinToString("\n") { PrivShell.format(pm, it) }
-                    }
-                }
-            }
-            appTick++
-            val cpuOut = cpu
-            handler.post {
-                fetching = false
-                if (!added) return@post
-                appCpu.text = when {
-                    !connected -> str(R.string.apps_need_adb)
-                    cpuOut == null -> str(R.string.cpu_apps_error)
-                    else -> str(R.string.cpu_apps_title) + "\n" + cpuOut +
-                        (if (ramText.isNotEmpty()) "\n\n" + str(R.string.ram_apps_title) + "\n" + ramText else "")
-                }
-            }
-        }.start()
-    }
-
-    private fun chip(label: String, bg: String, onClick: () -> Unit) = TextView(this).apply {
-        text = label
-        textSize = 11f
-        setTextColor(Color.WHITE)
-        gravity = Gravity.CENTER
-        setPadding(dp(10), dp(6), dp(10), dp(6))
-        background = rounded(bg, 10)
-        layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { rightMargin = dp(6) }
-        setOnClickListener { onClick() }
+    /** Tab Kết nối cần bàn phím: bỏ NOT_FOCUSABLE và đưa popup lên cao để bàn phím không che. */
+    private fun applyFocus() {
+        val needInput = expanded && tab == 2
+        if (needInput) {
+            params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            if (savedY < 0) { savedY = params.y; params.y = dp(24) }
+        } else {
+            params.flags = params.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            if (savedY >= 0) { params.y = savedY; savedY = -1 }
+        }
+        if (added) try { wm.updateViewLayout(root, params) } catch (e: Exception) { }
     }
 
     private fun toggle() {
         expanded = !expanded
         panel.visibility = if (expanded) View.VISIBLE else View.GONE
+        bubble.visibility = if (expanded) View.GONE else View.VISIBLE
         if (expanded) {
-            val maxX = resources.displayMetrics.widthPixels - dp(310)
+            val maxX = resources.displayMetrics.widthPixels - dp(350)
             params.x = params.x.coerceIn(0, maxOf(0, maxX))
-            posX = params.x
-            refreshList()
-            refreshAppCpu()
         }
-        wm.updateViewLayout(root, params)
+        applyFocus()
+        kick()
     }
 
-    // ---------------- Danh sách app ----------------
+    // ---------------- Tiến trình ----------------
 
-    private fun hasUsageAccess(): Boolean {
-        val ops = getSystemService(APP_OPS_SERVICE) as AppOpsManager
-        val uid = android.os.Process.myUid()
-        val mode = if (Build.VERSION.SDK_INT >= 29)
-            ops.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, uid, packageName)
-        else
-            @Suppress("DEPRECATION")
-            ops.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, uid, packageName)
-        return mode == AppOpsManager.MODE_ALLOWED
-    }
+    private fun labelOf(pkg: String): String = labels.getOrPut(pkg) { PrivShell.label(packageManager, pkg) }
 
-    private fun ago(ms: Long): String {
-        val m = ms / 60000
-        return when {
-            m < 1 -> str(R.string.ago_now)
-            m < 60 -> str(R.string.ago_min_fmt, m)
-            else -> str(R.string.ago_hour_fmt, m / 60)
-        }
-    }
-
-    private fun refreshList() {
-        list.removeAllViews()
-
-        if (!hasUsageAccess()) {
-            list.addView(TextView(this).apply {
-                text = str(R.string.overlay_need_usage)
-                textSize = 11f
-                setTextColor(Color.LTGRAY)
-                setPadding(0, dp(6), 0, dp(6))
-            })
-            list.addView(chip(str(R.string.overlay_open_settings), "#2A5A4A") {
-                startActivity(
-                    Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            })
+    private fun renderProc(connected: Boolean) {
+        hdrCpu.text = "CPU" + if (!sortRam) " ▼" else ""
+        hdrRam.text = "RAM" + if (sortRam) " ▼" else ""
+        if (!connected && ramMap.isEmpty()) {
+            procHint.visibility = View.VISIBLE
+            procHint.text = str(R.string.proc_need_adb)
+            for (r in procRows) r.root.visibility = View.GONE
             return
         }
+        procHint.visibility = View.GONE
+        val names = HashSet<String>().apply { addAll(ramMap.keys); addAll(cpuMap.keys) }
+        val rows = names.filter { (ramMap[it] ?: 0L) > 0L || (cpuMap[it] ?: 0f) > 0f }
+            .sortedWith(
+                if (sortRam) compareByDescending<String> { ramMap[it] ?: 0L }
+                else compareByDescending<String> { cpuMap[it] ?: 0f }.thenByDescending { ramMap[it] ?: 0L }
+            )
+            .take(procRows.size)
+        for ((i, r) in procRows.withIndex()) {
+            if (i >= rows.size) { r.root.visibility = View.GONE; continue }
+            val pkg = rows[i]
+            val cpu = cpuMap[pkg] ?: 0f
+            val kb = ramMap[pkg] ?: 0L
+            r.pkg = pkg
+            r.name.text = labelOf(pkg)
+            r.cpu.text = String.format(Locale.US, "%.1f%%", cpu)
+            r.ram.text = if (kb > 0) String.format(Locale.US, "%d MB", kb / 1024) else "--"
+            // Làm nóng ô theo mức dùng, giống Task Manager
+            r.cpu.setBackgroundColor(Color.argb((cpu.coerceIn(0f, 60f) / 60f * 150).toInt(), 124, 224, 195))
+            r.ram.setBackgroundColor(Color.argb((kb / 1024f).coerceIn(0f, 1200f).div(1200f).times(110).toInt(), 111, 168, 255))
+            r.root.visibility = View.VISIBLE
+        }
+    }
 
-        val now = System.currentTimeMillis()
-        val dayAgo = now - 24L * 3600 * 1000
-        val usm = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
-        val stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, dayAgo, now) ?: emptyList()
-        val pm = packageManager
+    // ---------------- Kết nối ----------------
 
-        val rows = stats
-            .filter {
-                it.lastTimeUsed > dayAgo &&
-                    it.packageName != packageName &&
-                    pm.getLaunchIntentForPackage(it.packageName) != null
+    private fun updateConn(connected: Boolean) {
+        if (!::connStatus.isInitialized) return
+        connStatus.text = str(
+            when {
+                connected -> R.string.adb_ready
+                PrivShell.isPaired(this) -> R.string.adb_paired_disconnected
+                else -> R.string.adb_disconnected
             }
-            .groupBy { it.packageName }
-            .map { (pkg, l) -> pkg to l.maxOf { it.lastTimeUsed } }
-            .sortedByDescending { it.second }
-            .take(15)
+        )
+    }
 
-        if (rows.isEmpty()) {
-            list.addView(TextView(this).apply {
-                text = str(R.string.overlay_no_apps)
-                textSize = 11f
-                setTextColor(Color.LTGRAY)
-            })
+    private fun openDevSettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        } catch (e: Exception) {
+            try { startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e2: Exception) { }
+        }
+    }
+
+    private fun doConnect() {
+        connResult.text = str(R.string.conn_searching)
+        Thread {
+            val ok = PrivShell.connect(applicationContext, force = true)
+            handler.post {
+                if (!added) return@post
+                connResult.text = str(if (ok) R.string.connect_ok else R.string.connect_fail)
+                updateConn(ok)
+                if (ok) kick()
+            }
+        }.start()
+    }
+
+    /** Mở Gỡ lỗi không dây và tự tìm cổng ghép nối (mDNS) rồi điền vào ô cổng. */
+    private fun startPairing() {
+        openDevSettings()
+        if (finding) return
+        finding = true
+        connResult.text = str(R.string.conn_searching)
+        Thread {
+            val port = NsdFinder.find(applicationContext, "_adb-tls-pairing._tcp", 180_000) { !finding || !added }
+            finding = false
+            handler.post {
+                if (!added) return@post
+                if (port != null) {
+                    portEt.setText(port.toString())
+                    connResult.text = str(R.string.conn_port_found_fmt, port)
+                } else {
+                    connResult.text = str(R.string.pair_no_port)
+                }
+            }
+        }.start()
+    }
+
+    private fun doPair() {
+        if (pairing) return
+        val port = portEt.text.toString().toIntOrNull()
+        val code = codeEt.text.toString()
+        if (port == null || code.length != 6) {
+            Toast.makeText(this, str(R.string.pair_need_port_code), Toast.LENGTH_SHORT).show()
             return
         }
-
-        for ((pkg, last) in rows) {
-            val label = try {
-                pm.getApplicationInfo(pkg, 0).loadLabel(pm).toString()
-            } catch (e: Exception) {
-                pkg
+        pairing = true
+        connResult.text = str(R.string.conn_searching)
+        Thread {
+            val ctx = applicationContext
+            val ok = PrivShell.pair(ctx, port, code) && PrivShell.connect(ctx, force = true)
+            pairing = false
+            handler.post {
+                if (!added) return@post
+                connResult.text = if (ok) str(R.string.pair_ok)
+                else str(R.string.pair_fail_fmt, PrivShell.lastError ?: "?")
+                if (ok) codeEt.setText("")
+                updateConn(ok)
+                if (ok) kick()
             }
-
-            val row = LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                setPadding(0, dp(4), 0, dp(4))
-            }
-            row.addView(TextView(this).apply {
-                text = "$label\n${ago(now - last)}"
-                textSize = 11.5f
-                setTextColor(Color.WHITE)
-                maxLines = 2
-                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
-            })
-            row.addView(chip(str(R.string.overlay_kill), "#6B2A2A") {
-                val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager
-                am.killBackgroundProcesses(pkg)
-                Toast.makeText(this, str(R.string.overlay_killed_fmt, label), Toast.LENGTH_SHORT).show()
-                list.removeView(row)
-            })
-            list.addView(row)
-        }
+        }.start()
     }
 
     // ---------------- Notification foreground ----------------

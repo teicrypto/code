@@ -74,11 +74,24 @@
     <string name="pair_fail_fmt">Ghép nối thất bại: %1$s</string>
     <string name="connect_ok">Đã kết nối</string>
     <string name="connect_fail">Không kết nối được. Wi-Fi và Gỡ lỗi không dây đã bật chưa?</string>
-    <string name="pair_overlay_wait">Mở \"Ghép nối thiết bị bằng mã ghép nối\" trong Gỡ lỗi không dây. Đang tìm cổng ghép nối…</string>
-    <string name="pair_overlay_enter">Đã tìm thấy cổng ghép nối. Gõ mã 6 số trong hộp thoại bên dưới:</string>
-    <string name="pair_overlay_busy">Đang ghép nối…</string>
-    <string name="pair_overlay_btn">Ghép nối</string>
     <string name="adb_paired_disconnected">ADB: đã ghép nối (đã lưu), chưa kết nối. Bật Wi-Fi và Gỡ lỗi không dây rồi bấm Kết nối.</string>
+    <string name="setup_title">Thiết lập xem từng app</string>
+    <string name="setup_intro">Làm theo 4 bước, chỉ một lần (khoảng 1 phút). Bước nào xong sẽ tự hiện dấu ✓.</string>
+    <string name="step1_title">1. Bật Tùy chọn nhà phát triển</string>
+    <string name="step1_desc">Mở Thông tin điện thoại và bấm 7 lần vào \"Số bản dựng\". Bỏ qua nếu đã bật.</string>
+    <string name="step1_btn">Mở Thông tin điện thoại</string>
+    <string name="step2_title">2. Bật Gỡ lỗi không dây</string>
+    <string name="step2_desc">Kết nối Wi-Fi trước. Trong Tùy chọn nhà phát triển, bật Gỡ lỗi không dây và bấm Cho phép nếu được hỏi.</string>
+    <string name="step2_btn">Mở Tùy chọn nhà phát triển</string>
+    <string name="step3_title">3. Ghép nối điện thoại</string>
+    <string name="step3_desc">Bấm nút bên dưới. Sau đó mở Gỡ lỗi không dây và bấm \"Ghép nối thiết bị bằng mã ghép nối\". Giữ hộp thoại đó mở, vuốt thanh thông báo xuống, bấm \"Nhập mã\" rồi gõ 6 số.</string>
+    <string name="step3_btn">Bắt đầu ghép nối</string>
+    <string name="step3_need_notif">Hãy cho phép thông báo rồi bấm Bắt đầu ghép nối lần nữa</string>
+    <string name="step4_title">4. Kết nối</string>
+    <string name="step4_desc">Tự kết nối sau khi ghép nối. Bấm nếu chưa thấy kết nối.</string>
+    <string name="setup_done">Xong rồi! Quay lại màn hình chính để xem CPU và RAM từng app.</string>
+    <string name="btn_setup">Thiết lập từng bước</string>
+
 
 
 
@@ -95,4 +108,33 @@
     <string name="metric_ram">RAM</string>
     <string name="metric_net">Tốc độ tải xuống</string>
     <string name="metric_temp">Nhiệt độ</string>
+    <string name="a11y_desc">Chỉ dùng lúc thiết lập để đọc mã ghép nối trong Cài đặt và tự ghép nối. Không thu thập hay gửi dữ liệu nào.</string>
+    <string name="step3_btn_auto">Tự động ghép nối</string>
+    <string name="step3_need_a11y">Bật SysWidget trong Trợ năng, rồi quay lại bấm Tự động ghép nối</string>
+    <string name="step3_desc_auto">Bấm Tự động ghép nối. App tự mở Gỡ lỗi không dây và tự ghép nối. Lần đầu sẽ nhờ bạn bật SysWidget trong Trợ năng.</string>
+    <string name="pop_title">Task Manager</string>
+    <string name="tab_perf">Hiệu suất</string>
+    <string name="tab_proc">Tiến trình</string>
+    <string name="tab_conn">Kết nối</string>
+    <string name="col_name">Tên</string>
+    <string name="proc_need_adb">Xem CPU/RAM từng app cần kết nối. Mở tab Kết nối.</string>
+    <string name="proc_gpu_note">Android không cung cấp GPU theo từng app.</string>
+    <string name="hw_title">Phần cứng</string>
+    <string name="cores_need_adb">Xem từng nhân cần kết nối (tab Kết nối).</string>
+    <string name="conn_pc_title">Cách A: qua máy tính (1 lần)</string>
+    <string name="conn_pc_desc">Cắm máy vào PC (đã bật Gỡ lỗi USB) và chạy: adb tcpip 5555 . Sau đó bấm Kết nối và chọn \"Luôn cho phép\" trên điện thoại. Có hiệu lực tới khi khởi động lại máy.</string>
+    <string name="conn_wifi_title">Cách B: ghép nối không dây</string>
+    <string name="conn_wifi_desc">1) Bấm Bắt đầu ghép nối (mở Gỡ lỗi không dây). 2) Bấm \"Ghép nối thiết bị bằng mã ghép nối\". 3) Gõ 6 số ngay tại đây, app tự ghép nối.</string>
+    <string name="conn_start_pair">Bắt đầu ghép nối</string>
+    <string name="conn_notif_alt">Ghép nối qua thông báo</string>
+    <string name="btn_pair">Ghép nối</string>
+    <string name="conn_searching">Đang xử lý…</string>
+    <string name="conn_port_found_fmt">Đã tìm thấy cổng: %1$d. Giờ gõ mã 6 số.</string>
+    <string name="onb_intro">Cho phép SysWidget hiển thị Task Manager nổi trên các app khác. Mọi thông số, biểu đồ, mức dùng từng app và kết nối đều nằm trong popup.</string>
+    <string name="onb_overlay_ok">✓ Hiển thị trên ứng dụng khác: đã cho phép</string>
+    <string name="onb_overlay_need">Hiển thị trên ứng dụng khác: chưa cho phép</string>
+    <string name="onb_overlay_btn">Cho phép hiển thị trên ứng dụng khác</string>
+    <string name="onb_open_popup">Mở popup Task Manager</string>
+    <string name="onb_stop_popup">Đóng popup</string>
+    <string name="onb_tip">Chạm vào bong bóng nhỏ để mở rộng. Trong popup, tab Kết nối giúp xem CPU/RAM từng app.</string>
 </resources>

@@ -74,11 +74,24 @@
     <string name="pair_fail_fmt">配对失败：%1$s</string>
     <string name="connect_ok">已连接</string>
     <string name="connect_fail">无法连接。请确认 Wi-Fi 和无线调试已开启。</string>
-    <string name="pair_overlay_wait">请在无线调试中打开“使用配对码配对设备”。正在查找配对端口…</string>
-    <string name="pair_overlay_enter">已找到配对端口。请输入下方对话框中的 6 位配对码：</string>
-    <string name="pair_overlay_busy">正在配对…</string>
-    <string name="pair_overlay_btn">配对</string>
     <string name="adb_paired_disconnected">ADB：已配对（已保存），未连接。请开启 Wi-Fi 和无线调试后点击“连接”。</string>
+    <string name="setup_title">设置各应用占用查看</string>
+    <string name="setup_intro">按以下 4 步操作一次即可（约 1 分钟）。完成的步骤会自动打 ✓。</string>
+    <string name="step1_title">1. 开启开发者选项</string>
+    <string name="step1_desc">打开“关于手机”，连续点击“版本号”7 次。已开启可跳过。</string>
+    <string name="step1_btn">打开关于手机</string>
+    <string name="step2_title">2. 开启无线调试</string>
+    <string name="step2_desc">先连接 Wi-Fi。在开发者选项中开启无线调试，如有提示请点击允许。</string>
+    <string name="step2_btn">打开开发者选项</string>
+    <string name="step3_title">3. 配对此手机</string>
+    <string name="step3_desc">点击下方按钮。然后打开无线调试，点击“使用配对码配对设备”。保持该对话框打开，下拉通知栏，点击“输入配对码”并输入 6 位数字。</string>
+    <string name="step3_btn">开始配对</string>
+    <string name="step3_need_notif">请允许通知，然后再次点击“开始配对”</string>
+    <string name="step4_title">4. 连接</string>
+    <string name="step4_desc">配对后会自动连接。如未连接请点击。</string>
+    <string name="setup_done">设置完成！返回主界面即可查看各应用 CPU 和内存。</string>
+    <string name="btn_setup">分步设置</string>
+
 
 
 
@@ -95,4 +108,33 @@
     <string name="metric_ram">RAM</string>
     <string name="metric_net">下载速度</string>
     <string name="metric_temp">温度</string>
+    <string name="a11y_desc">仅在设置时使用，用于读取设置中的配对码并自动配对。不收集也不发送任何数据。</string>
+    <string name="step3_btn_auto">自动配对</string>
+    <string name="step3_need_a11y">请在无障碍中开启 SysWidget，然后返回点击“自动配对”</string>
+    <string name="step3_desc_auto">点击“自动配对”。应用会打开无线调试并自动完成配对。首次使用需在无障碍中开启 SysWidget。</string>
+    <string name="pop_title">任务管理器</string>
+    <string name="tab_perf">性能</string>
+    <string name="tab_proc">进程</string>
+    <string name="tab_conn">连接</string>
+    <string name="col_name">名称</string>
+    <string name="proc_need_adb">查看各应用 CPU/内存需要连接。请打开“连接”标签。</string>
+    <string name="proc_gpu_note">Android 不提供各应用的 GPU 占用。</string>
+    <string name="hw_title">硬件</string>
+    <string name="cores_need_adb">查看各核心数据需要连接（“连接”标签）。</string>
+    <string name="conn_pc_title">方法 A：通过电脑（一次）</string>
+    <string name="conn_pc_desc">用 USB 连接电脑（已开启 USB 调试），运行：adb tcpip 5555 。然后点击连接，并在手机上选择“始终允许”。重启后失效。</string>
+    <string name="conn_wifi_title">方法 B：无线配对</string>
+    <string name="conn_wifi_desc">1) 点击开始配对（打开无线调试）。2) 点击“使用配对码配对设备”。3) 在此输入 6 位数字，将自动配对。</string>
+    <string name="conn_start_pair">开始配对</string>
+    <string name="conn_notif_alt">通过通知配对</string>
+    <string name="btn_pair">配对</string>
+    <string name="conn_searching">处理中…</string>
+    <string name="conn_port_found_fmt">已找到端口：%1$d。请输入 6 位配对码。</string>
+    <string name="onb_intro">允许 SysWidget 在其他应用上层显示悬浮任务管理器。所有数据、图表、各应用占用和连接设置都在悬浮窗内。</string>
+    <string name="onb_overlay_ok">✓ 显示在其他应用上层：已允许</string>
+    <string name="onb_overlay_need">显示在其他应用上层：尚未允许</string>
+    <string name="onb_overlay_btn">允许显示在其他应用上层</string>
+    <string name="onb_open_popup">打开任务管理器悬浮窗</string>
+    <string name="onb_stop_popup">关闭悬浮窗</string>
+    <string name="onb_tip">点击小气泡展开。在悬浮窗的“连接”标签中设置各应用 CPU/内存查看。</string>
 </resources>
