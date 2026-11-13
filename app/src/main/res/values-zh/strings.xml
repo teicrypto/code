@@ -74,6 +74,12 @@
     <string name="pair_fail_fmt">配对失败：%1$s</string>
     <string name="connect_ok">已连接</string>
     <string name="connect_fail">无法连接。请确认 Wi-Fi 和无线调试已开启。</string>
+    <string name="pair_overlay_wait">请在无线调试中打开“使用配对码配对设备”。正在查找配对端口…</string>
+    <string name="pair_overlay_enter">已找到配对端口。请输入下方对话框中的 6 位配对码：</string>
+    <string name="pair_overlay_busy">正在配对…</string>
+    <string name="pair_overlay_btn">配对</string>
+    <string name="adb_paired_disconnected">ADB：已配对（已保存），未连接。请开启 Wi-Fi 和无线调试后点击“连接”。</string>
+
 
 
     <string name="settings_title">设置</string>

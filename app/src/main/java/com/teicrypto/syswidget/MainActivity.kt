@@ -183,6 +183,16 @@ class MainActivity : Activity() {
         adbRow.addView(Button(this).apply {
             text = getString(R.string.btn_adb_pair)
             setOnClickListener {
+                if (!Settings.canDrawOverlays(this@MainActivity)) {
+                    // Ô nhập mã nổi cần quyền này
+                    Toast.makeText(
+                        this@MainActivity, getString(R.string.toast_grant_overlay), Toast.LENGTH_LONG
+                    ).show()
+                    startActivity(
+                        Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                    )
+                    return@setOnClickListener
+                }
                 startForegroundService(Intent(this@MainActivity, PairingService::class.java))
                 // Mở thẳng Tùy chọn nhà phát triển để bạn bấm "Gỡ lỗi không dây"
                 try {
@@ -349,7 +359,11 @@ class MainActivity : Activity() {
 
     private fun updateAdb() {
         adbStatus.text = getString(
-            if (PrivShell.state() == PrivShell.State.READY) R.string.adb_ready else R.string.adb_disconnected
+            when {
+                PrivShell.state() == PrivShell.State.READY -> R.string.adb_ready
+                PrivShell.isPaired(this) -> R.string.adb_paired_disconnected
+                else -> R.string.adb_disconnected
+            }
         )
     }
 

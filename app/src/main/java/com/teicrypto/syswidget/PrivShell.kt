@@ -20,6 +20,7 @@ object PrivShell {
     private const val HOST = "127.0.0.1"
     private const val CONNECT_TYPE = "_adb-tls-connect._tcp"
     private const val KEY_PAIRED = "adb_paired"
+    private const val KEY_PORT = "adb_last_port"
 
     @Volatile private var connected = false
     @Volatile var lastError: String? = null
@@ -45,8 +46,23 @@ object PrivShell {
         false
     }
 
+    /** Kết nối thẳng tới một cổng; thành công thì nhớ cổng này cho lần sau. */
+    private fun tryConnect(ctx: Context, port: Int): Boolean {
+        return try {
+            val r: Any? = SysAdbManager.getInstance(ctx.applicationContext).connect(HOST, port)
+            connected = r != false
+            if (connected) Prefs.sp(ctx).edit().putInt(KEY_PORT, port).apply()
+            connected
+        } catch (e: Throwable) {
+            lastError = e.message ?: e.javaClass.simpleName
+            connected = false
+            false
+        }
+    }
+
     /**
-     * Kết nối tới adbd của máy (tự tìm cổng bằng mDNS). Blocking.
+     * Kết nối tới adbd của máy. Blocking.
+     * Thử cổng đã lưu ở lần kết nối trước (nhanh, không cần mDNS), không được thì tự tìm cổng mới.
      * Không ép (force = false): chỉ thử khi đã từng ghép nối, và cách nhau tối thiểu 20 giây.
      */
     @Synchronized
@@ -57,19 +73,15 @@ object PrivShell {
         if (!force && now - lastAttempt < 20_000) return false
         lastAttempt = now
 
+        val saved = Prefs.sp(ctx).getInt(KEY_PORT, 0)
+        if (saved > 0 && tryConnect(ctx, saved)) return true
+
         val port = NsdFinder.find(ctx, CONNECT_TYPE, 6000) { false }
         if (port == null) {
             lastError = "no connect port (Wi-Fi / Wireless debugging off?)"
             return false
         }
-        try {
-            val r: Any? = SysAdbManager.getInstance(ctx.applicationContext).connect(HOST, port)
-            connected = r != false
-        } catch (e: Throwable) {
-            lastError = e.message ?: e.javaClass.simpleName
-            connected = false
-        }
-        return connected
+        return tryConnect(ctx, port)
     }
 
     /** Chạy một lệnh shell, trả về toàn bộ output. Blocking. */

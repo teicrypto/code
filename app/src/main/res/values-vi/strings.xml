@@ -74,6 +74,12 @@
     <string name="pair_fail_fmt">Ghép nối thất bại: %1$s</string>
     <string name="connect_ok">Đã kết nối</string>
     <string name="connect_fail">Không kết nối được. Wi-Fi và Gỡ lỗi không dây đã bật chưa?</string>
+    <string name="pair_overlay_wait">Mở \"Ghép nối thiết bị bằng mã ghép nối\" trong Gỡ lỗi không dây. Đang tìm cổng ghép nối…</string>
+    <string name="pair_overlay_enter">Đã tìm thấy cổng ghép nối. Gõ mã 6 số trong hộp thoại bên dưới:</string>
+    <string name="pair_overlay_busy">Đang ghép nối…</string>
+    <string name="pair_overlay_btn">Ghép nối</string>
+    <string name="adb_paired_disconnected">ADB: đã ghép nối (đã lưu), chưa kết nối. Bật Wi-Fi và Gỡ lỗi không dây rồi bấm Kết nối.</string>
+
 
 
     <string name="settings_title">Cài đặt</string>

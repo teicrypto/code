@@ -84,6 +84,12 @@
     <string name="pair_fail_fmt">Pairing failed: %1$s</string>
     <string name="connect_ok">Connected</string>
     <string name="connect_fail">Could not connect. Is Wi-Fi and Wireless debugging on?</string>
+    <string name="pair_overlay_wait">Open \"Pair device with pairing code\" in Wireless debugging. Looking for the pairing port…</string>
+    <string name="pair_overlay_enter">Pairing port found. Type the 6-digit code from the dialog below:</string>
+    <string name="pair_overlay_busy">Pairing…</string>
+    <string name="pair_overlay_btn">Pair</string>
+    <string name="adb_paired_disconnected">ADB: paired (saved), not connected. Turn on Wi-Fi and Wireless debugging, then tap Connect.</string>
+
 
 
     <string name="settings_title">Settings</string>
