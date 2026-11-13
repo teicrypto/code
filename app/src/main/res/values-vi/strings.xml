@@ -42,18 +42,6 @@
     <string name="ago_min_fmt">%1$d phút trước</string>
     <string name="ago_hour_fmt">%1$d giờ trước</string>
 
-    <string name="tab_recent">Gần đây</string>
-    <string name="tab_cpu">CPU</string>
-    <string name="cpu_top_title">App ăn CPU nhiều nhất (cần Shizuku)</string>
-    <string name="cpu_top_empty">Chưa có dữ liệu</string>
-    <string name="shizuku_not_installed">Chưa cài Shizuku. Cần Shizuku để đọc CPU từng app.</string>
-    <string name="shizuku_get">Tải Shizuku</string>
-    <string name="shizuku_not_running">Shizuku chưa chạy. Mở Shizuku và khởi động (Gỡ lỗi không dây).</string>
-    <string name="shizuku_open">Mở Shizuku</string>
-    <string name="shizuku_need_permission">Shizuku đang chạy. Hãy cấp quyền cho SysWidget.</string>
-    <string name="shizuku_grant">Cấp quyền Shizuku</string>
-    <string name="overlay_cpu_setup">Thiết lập trong app</string>
-    <string name="overlay_forcestop_fmt">Đã buộc dừng %1$s</string>
 
     <string name="notif_channel">Thông số hệ thống</string>
     <string name="notif_channel_bar">Thông số trên thanh trạng thái</string>
@@ -62,11 +50,31 @@
 
     <string name="cpu_apps_title">App ăn CPU nhiều nhất</string>
     <string name="cpu_apps_error">Không đọc được dữ liệu CPU</string>
-    <string name="cpu_apps_need_shizuku">Xem CPU từng app cần Shizuku. Mở app SysWidget để cài đặt.</string>
-    <string name="shizuku_ready">Shizuku: đã kết nối</string>
-    <string name="shizuku_noperm">Shizuku đang chạy nhưng SysWidget chưa được cấp quyền</string>
-    <string name="shizuku_off">Shizuku chưa chạy. Hãy cài Shizuku, khởi động nó (Gỡ lỗi không dây) rồi quay lại.</string>
-    <string name="btn_shizuku_grant">Cấp quyền Shizuku</string>
+    <string name="ram_apps_title">App ăn RAM nhiều nhất</string>
+    <string name="apps_need_adb">Xem CPU/RAM từng app cần ADB tích hợp. Mở app SysWidget để ghép nối.</string>
+    <string name="adb_section">Mức dùng từng app (ADB tích hợp)</string>
+    <string name="adb_ready">ADB: đã kết nối</string>
+    <string name="adb_disconnected">ADB: chưa kết nối. Bật Wi-Fi và Gỡ lỗi không dây rồi bấm Kết nối. Lần đầu: bấm Ghép nối.</string>
+    <string name="btn_adb_pair">Ghép nối (qua thông báo)</string>
+    <string name="btn_adb_connect">Kết nối</string>
+    <string name="adb_manual_hint">Ghép nối thủ công (dùng chế độ chia đôi màn hình với hộp thoại ghép nối):</string>
+    <string name="hint_port">Cổng ghép nối</string>
+    <string name="hint_code">Mã 6 số</string>
+    <string name="btn_adb_pair_manual">Ghép nối thủ công</string>
+    <string name="pair_need_port_code">Hãy nhập cổng ghép nối và mã 6 số</string>
+    <string name="pair_notif_channel">Ghép nối ADB</string>
+    <string name="pair_notif_wait_title">Đang chờ ghép nối</string>
+    <string name="pair_notif_wait_text">Mở Tùy chọn nhà phát triển → Gỡ lỗi không dây → Ghép nối thiết bị bằng mã ghép nối. Giữ hộp thoại đó mở.</string>
+    <string name="pair_notif_ready_title">Ghép nối ADB</string>
+    <string name="pair_notif_enter">Đã tìm thấy cổng ghép nối. Nhập mã 6 số trong hộp thoại ghép nối.</string>
+    <string name="pair_notif_action">Nhập mã</string>
+    <string name="pair_notif_label">Mã 6 số</string>
+    <string name="pair_ok">Đã ghép nối và kết nối</string>
+    <string name="pair_no_port">Không tìm thấy cổng ghép nối. Hãy giữ hộp thoại ghép nối mở rồi thử lại.</string>
+    <string name="pair_fail_fmt">Ghép nối thất bại: %1$s</string>
+    <string name="connect_ok">Đã kết nối</string>
+    <string name="connect_fail">Không kết nối được. Wi-Fi và Gỡ lỗi không dây đã bật chưa?</string>
+
 
     <string name="settings_title">Cài đặt</string>
     <string name="settings_language">Ngôn ngữ</string>

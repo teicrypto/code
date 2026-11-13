@@ -52,18 +52,6 @@
     <string name="ago_min_fmt">%1$d min ago</string>
     <string name="ago_hour_fmt">%1$d h ago</string>
 
-    <string name="tab_recent">Recent</string>
-    <string name="tab_cpu">CPU</string>
-    <string name="cpu_top_title">Top apps by CPU (needs Shizuku)</string>
-    <string name="cpu_top_empty">No data yet</string>
-    <string name="shizuku_not_installed">Shizuku is not installed. It is required to read per-app CPU.</string>
-    <string name="shizuku_get">Get Shizuku</string>
-    <string name="shizuku_not_running">Shizuku is not running. Open it and start it (Wireless debugging).</string>
-    <string name="shizuku_open">Open Shizuku</string>
-    <string name="shizuku_need_permission">Shizuku is running. Grant permission to SysWidget.</string>
-    <string name="shizuku_grant">Grant Shizuku permission</string>
-    <string name="overlay_cpu_setup">Set up in the app</string>
-    <string name="overlay_forcestop_fmt">Force-stopped %1$s</string>
 
     <string name="notif_channel">System stats</string>
     <string name="notif_channel_bar">Status bar stats</string>
@@ -72,11 +60,31 @@
 
     <string name="cpu_apps_title">Top apps by CPU</string>
     <string name="cpu_apps_error">Could not read CPU data</string>
-    <string name="cpu_apps_need_shizuku">Per-app CPU needs Shizuku. Open the SysWidget app for setup.</string>
-    <string name="shizuku_ready">Shizuku: connected</string>
-    <string name="shizuku_noperm">Shizuku is running but SysWidget has no permission yet</string>
-    <string name="shizuku_off">Shizuku is not running. Install Shizuku, start it (Wireless debugging), then come back.</string>
-    <string name="btn_shizuku_grant">Grant Shizuku permission</string>
+    <string name="ram_apps_title">Top apps by RAM</string>
+    <string name="apps_need_adb">Per-app CPU/RAM needs built-in ADB. Open the SysWidget app to pair.</string>
+    <string name="adb_section">Per-app usage (built-in ADB)</string>
+    <string name="adb_ready">ADB: connected</string>
+    <string name="adb_disconnected">ADB: not connected. Turn on Wi-Fi and Wireless debugging, then tap Connect. First time: tap Pair.</string>
+    <string name="btn_adb_pair">Pair (via notification)</string>
+    <string name="btn_adb_connect">Connect</string>
+    <string name="adb_manual_hint">Manual pairing (use split screen with the pairing dialog):</string>
+    <string name="hint_port">Pairing port</string>
+    <string name="hint_code">6-digit code</string>
+    <string name="btn_adb_pair_manual">Pair manually</string>
+    <string name="pair_need_port_code">Enter the pairing port and the 6-digit code</string>
+    <string name="pair_notif_channel">ADB pairing</string>
+    <string name="pair_notif_wait_title">Waiting for pairing</string>
+    <string name="pair_notif_wait_text">Open Developer options → Wireless debugging → Pair device with pairing code. Keep that dialog open.</string>
+    <string name="pair_notif_ready_title">ADB pairing</string>
+    <string name="pair_notif_enter">Pairing port found. Enter the 6-digit code from the pairing dialog.</string>
+    <string name="pair_notif_action">Enter code</string>
+    <string name="pair_notif_label">6-digit code</string>
+    <string name="pair_ok">Paired and connected</string>
+    <string name="pair_no_port">Pairing port not found. Keep the pairing dialog open and try again.</string>
+    <string name="pair_fail_fmt">Pairing failed: %1$s</string>
+    <string name="connect_ok">Connected</string>
+    <string name="connect_fail">Could not connect. Is Wi-Fi and Wireless debugging on?</string>
+
 
     <string name="settings_title">Settings</string>
     <string name="settings_language">Language</string>

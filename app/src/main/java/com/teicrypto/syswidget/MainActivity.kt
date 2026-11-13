@@ -28,7 +28,8 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import android.view.View
-import rikka.shizuku.Shizuku
+import android.text.InputType
+import android.widget.EditText
 
 class MainActivity : Activity() {
 
@@ -42,13 +43,13 @@ class MainActivity : Activity() {
     private lateinit var tempChart: LineChartView
     private lateinit var netChart: LineChartView
     private var createdLang = ""
-    private lateinit var shizukuStatus: TextView
-    private lateinit var shizukuBtn: Button
+    private lateinit var adbStatus: TextView
     private lateinit var cpuApps: TextView
+    private lateinit var ramApps: TextView
     private var tickCount = 0
+    private var appTick = 0
     private var fetching = false
-    private val shizukuListener =
-        Shizuku.OnRequestPermissionResultListener { _, _ -> runOnUiThread { updateShizuku() } }
+    private var ramText = ""
 
     // Áp dụng ngôn ngữ đã chọn trong Cài đặt
     override fun attachBaseContext(base: Context) {
@@ -76,7 +77,7 @@ class MainActivity : Activity() {
             ramChart.add(s.ramPct.toFloat(), "${p(s.ramPct)}  ${s.ramInfo}")
             tempChart.add(s.tempC.toFloat(), "${s.tempC.toInt()}°C")
             netChart.add(s.downBps.toFloat(), s.netInfo)
-            if (tickCount++ % 2 == 0) refreshAppCpu() // 4 giây/lần
+            if (tickCount++ % 2 == 0) refreshApps() // 4 giây/lần
             handler.postDelayed(this, 2000)
         }
     }
@@ -164,25 +165,106 @@ class MainActivity : Activity() {
             setOnClickListener { startActivity(Intent(this@MainActivity, SettingsActivity::class.java)) }
         })
 
-        // App ăn CPU (qua Shizuku)
+        // CPU / RAM từng app (ADB tích hợp, qua Gỡ lỗi không dây)
         root.addView(TextView(this).apply {
-            text = getString(R.string.cpu_apps_title)
+            text = getString(R.string.adb_section)
             textSize = 13f
             setTextColor(Color.parseColor("#F2A65A"))
             setTypeface(null, Typeface.BOLD)
             setPadding(0, pad, 0, pad / 4)
         })
-        shizukuStatus = TextView(this).apply {
+        adbStatus = TextView(this).apply {
             textSize = 12f
             setTextColor(Color.LTGRAY)
         }
-        root.addView(shizukuStatus)
-        shizukuBtn = Button(this).apply {
-            text = getString(R.string.btn_shizuku_grant)
-            visibility = View.GONE
-            setOnClickListener { ShizukuHelper.requestPermission() }
+        root.addView(adbStatus)
+
+        val adbRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        adbRow.addView(Button(this).apply {
+            text = getString(R.string.btn_adb_pair)
+            setOnClickListener {
+                startForegroundService(Intent(this@MainActivity, PairingService::class.java))
+                // Mở thẳng Tùy chọn nhà phát triển để bạn bấm "Gỡ lỗi không dây"
+                try {
+                    startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
+                } catch (e: Exception) {
+                }
+            }
+        })
+        adbRow.addView(Button(this).apply {
+            text = getString(R.string.btn_adb_connect)
+            setOnClickListener {
+                Thread {
+                    val ok = PrivShell.connect(applicationContext, force = true)
+                    runOnUiThread {
+                        updateAdb()
+                        Toast.makeText(
+                            this@MainActivity,
+                            getString(if (ok) R.string.connect_ok else R.string.connect_fail),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }.start()
+            }
+        })
+        root.addView(adbRow)
+
+        // Ghép nối thủ công: nhập cổng + mã (dùng khi chia đôi màn hình với hộp thoại ghép nối)
+        root.addView(TextView(this).apply {
+            text = getString(R.string.adb_manual_hint)
+            textSize = 11f
+            setTextColor(Color.parseColor("#8A94A0"))
+            setPadding(0, pad / 2, 0, 0)
+        })
+        val portEdit = EditText(this).apply {
+            hint = getString(R.string.hint_port)
+            inputType = InputType.TYPE_CLASS_NUMBER
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.GRAY)
+            textSize = 14f
         }
-        root.addView(shizukuBtn)
+        val codeEdit = EditText(this).apply {
+            hint = getString(R.string.hint_code)
+            inputType = InputType.TYPE_CLASS_NUMBER
+            setTextColor(Color.WHITE)
+            setHintTextColor(Color.GRAY)
+            textSize = 14f
+        }
+        val manualRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        manualRow.addView(portEdit, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        manualRow.addView(codeEdit, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        root.addView(manualRow)
+        root.addView(Button(this).apply {
+            text = getString(R.string.btn_adb_pair_manual)
+            setOnClickListener {
+                val port = portEdit.text.toString().trim().toIntOrNull()
+                val code = codeEdit.text.toString().trim()
+                if (port == null || code.isEmpty()) {
+                    Toast.makeText(this@MainActivity, getString(R.string.pair_need_port_code), Toast.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                Thread {
+                    val ctx = applicationContext
+                    val ok = PrivShell.pair(ctx, port, code) && PrivShell.connect(ctx, force = true)
+                    runOnUiThread {
+                        updateAdb()
+                        Toast.makeText(
+                            this@MainActivity,
+                            if (ok) getString(R.string.pair_ok)
+                            else getString(R.string.pair_fail_fmt, PrivShell.lastError ?: "?"),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }.start()
+            }
+        })
+
+        root.addView(TextView(this).apply {
+            text = getString(R.string.cpu_apps_title)
+            textSize = 12f
+            setTextColor(Color.parseColor("#8A94A0"))
+            setPadding(0, pad / 2, 0, 0)
+        })
         cpuApps = TextView(this).apply {
             typeface = Typeface.MONOSPACE
             textSize = 12f
@@ -190,6 +272,18 @@ class MainActivity : Activity() {
             setPadding(0, pad / 4, 0, pad / 2)
         }
         root.addView(cpuApps)
+        root.addView(TextView(this).apply {
+            text = getString(R.string.ram_apps_title)
+            textSize = 12f
+            setTextColor(Color.parseColor("#8A94A0"))
+        })
+        ramApps = TextView(this).apply {
+            typeface = Typeface.MONOSPACE
+            textSize = 12f
+            setTextColor(Color.parseColor("#6FA8FF"))
+            setPadding(0, pad / 4, 0, pad / 2)
+        }
+        root.addView(ramApps)
 
         // Biểu đồ lịch sử (~3 phút gần nhất)
         cpuChart = LineChartView(this, "CPU", Color.parseColor("#7CE0C3"), 100f)
@@ -243,8 +337,6 @@ class MainActivity : Activity() {
         )
         setContentView(outer)
 
-        try { Shizuku.addRequestPermissionResultListener(shizukuListener) } catch (e: Throwable) { }
-
         // Mỗi lần mở app (khởi động mới, không tính xoay màn hình) hiện 1 quảng cáo toàn màn hình
         if (savedInstanceState == null) loadInterstitial()
 
@@ -255,36 +347,43 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun updateShizuku() {
-        when (ShizukuHelper.state()) {
-            ShizukuHelper.State.READY -> {
-                shizukuStatus.text = getString(R.string.shizuku_ready)
-                shizukuBtn.visibility = View.GONE
-            }
-            ShizukuHelper.State.NO_PERMISSION -> {
-                shizukuStatus.text = getString(R.string.shizuku_noperm)
-                shizukuBtn.visibility = View.VISIBLE
-                cpuApps.text = ""
-            }
-            ShizukuHelper.State.NOT_RUNNING -> {
-                shizukuStatus.text = getString(R.string.shizuku_off)
-                shizukuBtn.visibility = View.GONE
-                cpuApps.text = ""
-            }
-        }
+    private fun updateAdb() {
+        adbStatus.text = getString(
+            if (PrivShell.state() == PrivShell.State.READY) R.string.adb_ready else R.string.adb_disconnected
+        )
     }
 
-    private fun refreshAppCpu() {
-        updateShizuku()
-        if (fetching || ShizukuHelper.state() != ShizukuHelper.State.READY) return
+    private fun refreshApps() {
+        updateAdb()
+        if (fetching) return
         fetching = true
         Thread {
-            val r = ShizukuHelper.topCpu(10)
+            val ctx = applicationContext
+            val pm = packageManager
+            val connected = PrivShell.connect(ctx) // tự kết nối lại nếu đã từng ghép nối
+            var cpu: String? = null
+            var ram: String? = null
+            if (connected) {
+                cpu = PrivShell.topCpu(ctx, 10)?.joinToString("\n") { PrivShell.format(pm, it) }
+                if (appTick % 3 == 0) { // RAM nặng hơn nên 12 giây mới lấy một lần
+                    ram = PrivShell.topRam(ctx, 10)?.joinToString("\n") { PrivShell.format(pm, it) }
+                }
+            }
+            appTick++
+            val cpuOut = cpu
+            val ramOut = ram
             runOnUiThread {
                 fetching = false
                 if (isDestroyed) return@runOnUiThread
-                cpuApps.text = if (r == null) getString(R.string.cpu_apps_error)
-                else r.joinToString("\n") { ShizukuHelper.format(packageManager, it) }
+                updateAdb()
+                if (!connected) {
+                    cpuApps.text = ""
+                    ramApps.text = ""
+                    return@runOnUiThread
+                }
+                cpuApps.text = cpuOut ?: getString(R.string.cpu_apps_error)
+                if (ramOut != null) ramText = ramOut
+                ramApps.text = ramText
             }
         }.start()
     }
@@ -328,7 +427,6 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
-        try { Shizuku.removeRequestPermissionResultListener(shizukuListener) } catch (e: Throwable) { }
         adView.destroy()
         super.onDestroy()
     }

@@ -60,7 +60,7 @@ class OverlayService : Service() {
     private var netC: LineChartView? = null
     private var tempC: LineChartView? = null
 
-    // App ăn CPU (qua Shizuku)
+    // CPU/RAM từng app (ADB tích hợp)
     private lateinit var appCpu: TextView
     private var tickCount = 0
     private var fetching = false
@@ -287,22 +287,37 @@ class OverlayService : Service() {
         }
     }
 
+    private var ramText = ""
+    private var appTick = 0
+
     private fun refreshAppCpu() {
         if (!::appCpu.isInitialized) return
-        if (ShizukuHelper.state() != ShizukuHelper.State.READY) {
-            appCpu.text = str(R.string.cpu_apps_need_shizuku)
-            return
-        }
         if (fetching) return
         fetching = true
         Thread {
-            val r = ShizukuHelper.topCpu(8)
+            val ctx = applicationContext
+            val pm = packageManager
+            val connected = PrivShell.connect(ctx) // tự kết nối lại nếu đã từng ghép nối
+            var cpu: String? = null
+            if (connected) {
+                cpu = PrivShell.topCpu(ctx, 6)?.joinToString("\n") { PrivShell.format(pm, it) }
+                if (appTick % 3 == 0) { // RAM nặng hơn nên 3 lần cập nhật mới lấy một lần
+                    PrivShell.topRam(ctx, 6)?.let { l ->
+                        ramText = l.joinToString("\n") { PrivShell.format(pm, it) }
+                    }
+                }
+            }
+            appTick++
+            val cpuOut = cpu
             handler.post {
                 fetching = false
                 if (!added) return@post
-                appCpu.text = if (r == null) str(R.string.cpu_apps_error)
-                else str(R.string.cpu_apps_title) + "\n" +
-                    r.joinToString("\n") { ShizukuHelper.format(packageManager, it) }
+                appCpu.text = when {
+                    !connected -> str(R.string.apps_need_adb)
+                    cpuOut == null -> str(R.string.cpu_apps_error)
+                    else -> str(R.string.cpu_apps_title) + "\n" + cpuOut +
+                        (if (ramText.isNotEmpty()) "\n\n" + str(R.string.ram_apps_title) + "\n" + ramText else "")
+                }
             }
         }.start()
     }
