@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_desc">CPU、GPU、内存、存储、电池、网络</string>
+
+    <string name="main_howto">1) 点击“开启更新”。\n2) 长按主屏幕 → 小部件 → SysWidget。</string>
+    <string name="btn_start_updates">开启更新</string>
+    <string name="btn_stop">关闭</string>
+    <string name="btn_start_popup">开启悬浮窗</string>
+    <string name="btn_usage_access">授予应用列表权限</string>
+    <string name="btn_settings">设置</string>
+    <string name="toast_grant_overlay">请授予“显示在其他应用上层”权限后再点击</string>
+
+    <string name="label_storage">存储</string>
+    <string name="label_battery">电池</string>
+    <string name="label_network">网络</string>
+    <string name="label_temp">温度</string>
+    <string name="chart_net">下载速度</string>
+    <string name="chart_temp">温度</string>
+
+    <string name="cpu_real">实际负载</string>
+    <string name="cpu_est">按频率估算</string>
+    <string name="cores_fmt">%d 核</string>
+    <string name="gpu_unreadable">设备不允许读取</string>
+    <string name="charging">充电中</string>
+    <string name="discharging">放电中</string>
+    <string name="temp_batt_fmt">电池 %1$.0f°C</string>
+    <string name="uptime_fmt">已运行 %1$d小时%2$02d分</string>
+
+    <string name="ad_loaded">AdMob：广告已加载</string>
+    <string name="ad_error_fmt">AdMob 错误 %1$d：%2$s</string>
+    <string name="ad_inter_error_fmt">AdMob 全屏广告错误 %1$d：%2$s</string>
+
+    <string name="overlay_no_permission">尚未授予悬浮窗权限</string>
+    <string name="overlay_refresh">刷新</string>
+    <string name="overlay_close">关闭悬浮窗</string>
+    <string name="overlay_kill">结束</string>
+    <string name="overlay_killed_fmt">已发送结束 %1$s 的指令</string>
+    <string name="overlay_need_usage">需要授予“使用情况访问”权限才能查看应用列表。</string>
+    <string name="overlay_open_settings">打开权限设置</string>
+    <string name="overlay_no_apps">暂无最近使用的应用数据。</string>
+    <string name="ago_now">刚刚使用</string>
+    <string name="ago_min_fmt">%1$d 分钟前</string>
+    <string name="ago_hour_fmt">%1$d 小时前</string>
+
+    <string name="tab_recent">最近</string>
+    <string name="tab_cpu">CPU</string>
+    <string name="cpu_top_title">CPU 占用最高的应用（需要 Shizuku）</string>
+    <string name="cpu_top_empty">暂无数据</string>
+    <string name="shizuku_not_installed">未安装 Shizuku。读取各应用 CPU 需要 Shizuku。</string>
+    <string name="shizuku_get">获取 Shizuku</string>
+    <string name="shizuku_not_running">Shizuku 未运行。请打开并启动它（无线调试）。</string>
+    <string name="shizuku_open">打开 Shizuku</string>
+    <string name="shizuku_need_permission">Shizuku 正在运行，请授予 SysWidget 权限。</string>
+    <string name="shizuku_grant">授予 Shizuku 权限</string>
+    <string name="overlay_cpu_setup">在应用中设置</string>
+    <string name="overlay_forcestop_fmt">已强制停止 %1$s</string>
+
+    <string name="notif_channel">系统信息</string>
+    <string name="notif_channel_bar">状态栏信息</string>
+    <string name="notif_widget_title">SysWidget 正在更新小部件</string>
+    <string name="notif_overlay_title">SysWidget 悬浮窗已开启</string>
+
+    <string name="cpu_apps_title">CPU 占用最高的应用</string>
+    <string name="cpu_apps_error">无法读取 CPU 数据</string>
+    <string name="cpu_apps_need_shizuku">查看各应用 CPU 需要 Shizuku，请打开 SysWidget 应用进行设置。</string>
+    <string name="shizuku_ready">Shizuku：已连接</string>
+    <string name="shizuku_noperm">Shizuku 正在运行，但尚未授权 SysWidget</string>
+    <string name="shizuku_off">Shizuku 未运行。请安装并启动 Shizuku（无线调试），然后返回。</string>
+    <string name="btn_shizuku_grant">授予 Shizuku 权限</string>
+
+    <string name="settings_title">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_section_popup">悬浮窗</string>
+    <string name="settings_section_status">状态栏</string>
+    <string name="settings_mini_charts">在悬浮窗中显示迷你图表</string>
+    <string name="settings_bubble_extra">在悬浮球上显示网络和温度</string>
+    <string name="settings_status_bar">在状态栏显示系统信息</string>
+    <string name="settings_status_metric_fmt">状态栏显示：%1$s</string>
+    <string name="settings_status_hint">状态栏图标只显示一项指标，下拉通知栏可查看全部信息。</string>
+    <string name="metric_cpu">CPU</string>
+    <string name="metric_ram">RAM</string>
+    <string name="metric_net">下载速度</string>
+    <string name="metric_temp">温度</string>
+</resources>

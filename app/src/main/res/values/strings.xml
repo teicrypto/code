@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">SysWidget</string>
+
+    <!-- AdMob -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-9060691287440103~9181293270</string>
+    <!-- Banner THU NGHIEM cua Google. Khi phat hanh doi lai: ca-app-pub-9060691287440103/8578658047 -->
+    <string name="admob_banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- Interstitial THU NGHIEM cua Google. Khi phat hanh thay bang ad unit Interstitial that. -->
+    <string name="admob_interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+
+    <!-- Default language: English -->
+    <string name="widget_desc">CPU, GPU, RAM, storage, battery, network</string>
+
+    <string name="main_howto">1) Tap \"Start updates\".\n2) Long-press the home screen → Widgets → SysWidget.</string>
+    <string name="btn_start_updates">Start updates</string>
+    <string name="btn_stop">Stop</string>
+    <string name="btn_start_popup">Start floating popup</string>
+    <string name="btn_usage_access">Grant app list access</string>
+    <string name="btn_settings">Settings</string>
+    <string name="toast_grant_overlay">Grant \"Display over other apps\", then tap again</string>
+
+    <string name="label_storage">Storage</string>
+    <string name="label_battery">Battery</string>
+    <string name="label_network">Network</string>
+    <string name="label_temp">Temp</string>
+    <string name="chart_net">Download speed</string>
+    <string name="chart_temp">Temperature</string>
+
+    <string name="cpu_real">Actual load</string>
+    <string name="cpu_est">Estimated by clock</string>
+    <string name="cores_fmt">%d cores</string>
+    <string name="gpu_unreadable">Not readable on this device</string>
+    <string name="charging">Charging</string>
+    <string name="discharging">Discharging</string>
+    <string name="temp_batt_fmt">Battery %1$.0f°C</string>
+    <string name="uptime_fmt">Up %1$dh%2$02dm</string>
+
+    <string name="ad_loaded">AdMob: ad loaded</string>
+    <string name="ad_error_fmt">AdMob error %1$d: %2$s</string>
+    <string name="ad_inter_error_fmt">AdMob interstitial error %1$d: %2$s</string>
+
+    <string name="overlay_no_permission">Permission to display over other apps not granted</string>
+    <string name="overlay_refresh">Refresh</string>
+    <string name="overlay_close">Close popup</string>
+    <string name="overlay_kill">Kill</string>
+    <string name="overlay_killed_fmt">Kill command sent for %1$s</string>
+    <string name="overlay_need_usage">Grant \"Usage access\" to see the app list.</string>
+    <string name="overlay_open_settings">Open permission settings</string>
+    <string name="overlay_no_apps">No recent app data yet.</string>
+    <string name="ago_now">just used</string>
+    <string name="ago_min_fmt">%1$d min ago</string>
+    <string name="ago_hour_fmt">%1$d h ago</string>
+
+    <string name="tab_recent">Recent</string>
+    <string name="tab_cpu">CPU</string>
+    <string name="cpu_top_title">Top apps by CPU (needs Shizuku)</string>
+    <string name="cpu_top_empty">No data yet</string>
+    <string name="shizuku_not_installed">Shizuku is not installed. It is required to read per-app CPU.</string>
+    <string name="shizuku_get">Get Shizuku</string>
+    <string name="shizuku_not_running">Shizuku is not running. Open it and start it (Wireless debugging).</string>
+    <string name="shizuku_open">Open Shizuku</string>
+    <string name="shizuku_need_permission">Shizuku is running. Grant permission to SysWidget.</string>
+    <string name="shizuku_grant">Grant Shizuku permission</string>
+    <string name="overlay_cpu_setup">Set up in the app</string>
+    <string name="overlay_forcestop_fmt">Force-stopped %1$s</string>
+
+    <string name="notif_channel">System stats</string>
+    <string name="notif_channel_bar">Status bar stats</string>
+    <string name="notif_widget_title">SysWidget is updating the widget</string>
+    <string name="notif_overlay_title">SysWidget popup is on</string>
+
+    <string name="cpu_apps_title">Top apps by CPU</string>
+    <string name="cpu_apps_error">Could not read CPU data</string>
+    <string name="cpu_apps_need_shizuku">Per-app CPU needs Shizuku. Open the SysWidget app for setup.</string>
+    <string name="shizuku_ready">Shizuku: connected</string>
+    <string name="shizuku_noperm">Shizuku is running but SysWidget has no permission yet</string>
+    <string name="shizuku_off">Shizuku is not running. Install Shizuku, start it (Wireless debugging), then come back.</string>
+    <string name="btn_shizuku_grant">Grant Shizuku permission</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_section_popup">Floating popup</string>
+    <string name="settings_section_status">Status bar</string>
+    <string name="settings_mini_charts">Show mini charts in popup</string>
+    <string name="settings_bubble_extra">Show network and temperature on popup bubble</string>
+    <string name="settings_status_bar">Show stats in status bar</string>
+    <string name="settings_status_metric_fmt">Status bar shows: %1$s</string>
+    <string name="settings_status_hint">The status bar icon shows one metric. Pull down the notification shade to see all of them.</string>
+    <string name="metric_cpu">CPU</string>
+    <string name="metric_ram">RAM</string>
+    <string name="metric_net">Download speed</string>
+    <string name="metric_temp">Temperature</string>
+</resources>
