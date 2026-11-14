@@ -159,4 +159,5 @@
     <string name="pairing_help">Đang mở Gỡ lỗi không dây. Hãy bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở. Sau đó vuốt thanh thông báo xuống và bấm \"Nhập mã ghép nối\".</string>
     <string name="btn_open_adb">Thiết lập kết nối ADB</string>
     <string name="conn_tab_desc">Xem CPU/RAM từng app cần kết nối ADB tích hợp. Mở màn hình thiết lập để kết nối.</string>
+    <string name="pair_open_dialog">Mở hộp nhập</string>
 </resources>

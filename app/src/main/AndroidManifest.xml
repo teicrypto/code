@@ -45,6 +45,13 @@
             android:exported="false" />
 
         <activity
+            android:name=".CodeDialogActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+
+        <activity
             android:name=".PairingActivity"
             android:exported="false" />
 

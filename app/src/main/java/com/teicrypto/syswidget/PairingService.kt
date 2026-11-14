@@ -48,8 +48,8 @@ class PairingService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == ACTION_CODE) {
-            val code = RemoteInput.getResultsFromIntent(intent)
-                ?.getCharSequence(KEY_CODE)?.toString()?.filter { it.isDigit() }.orEmpty()
+            val code = (RemoteInput.getResultsFromIntent(intent)?.getCharSequence(KEY_CODE)?.toString()
+                ?: intent.getStringExtra(EXTRA_CODE)).orEmpty().filter { it.isDigit() }
             if (code.isNotEmpty()) doPair(code)
             return START_NOT_STICKY
         }
@@ -113,7 +113,7 @@ class PairingService : Service() {
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(Notification.BigTextStyle().bigText(text))
-            .setOngoing(true)
+            .setOngoing(false)
             .setOnlyAlertOnce(true)
         if (withInput) {
             val intent = Intent(this, PairingService::class.java).setAction(ACTION_CODE)
@@ -130,13 +130,28 @@ class PairingService : Service() {
                 ).addRemoteInput(ri).build()
             )
         }
+        if (withInput) {
+            // Phương án dự phòng: một số ROM không hiện ô nhập trả lời trong thông báo -> mở hộp nhập riêng
+            val open = PendingIntent.getActivity(
+                this, 2,
+                Intent(this, CodeDialogActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            b.addAction(
+                Notification.Action.Builder(
+                    Icon.createWithResource(this, R.drawable.ic_app), str(R.string.pair_open_dialog), open
+                ).build()
+            )
+        }
         return b.build()
     }
 
     companion object {
         private const val CHANNEL = "sys_pair"
         private const val NOTIF_ID = 3
-        private const val ACTION_CODE = "com.teicrypto.syswidget.PAIR_CODE"
+        const val ACTION_CODE = "com.teicrypto.syswidget.PAIR_CODE"
         private const val KEY_CODE = "code"
+        const val EXTRA_CODE = "code_text"
+        const val ACTION_CODE_PUBLIC = ACTION_CODE
     }
 }

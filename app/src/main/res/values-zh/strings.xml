@@ -159,4 +159,5 @@
     <string name="pairing_help">正在打开无线调试。请开启它，点击“使用配对码配对设备”并保持该对话框打开，然后下拉通知栏并点击“输入配对码”。</string>
     <string name="btn_open_adb">ADB 连接设置</string>
     <string name="conn_tab_desc">查看各应用 CPU/内存需要内置 ADB 连接。请打开设置界面进行连接。</string>
+    <string name="pair_open_dialog">打开输入框</string>
 </resources>

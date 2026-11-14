@@ -169,4 +169,5 @@
     <string name="pairing_help">Wireless debugging is opening. Turn it on, tap \"Pair device with pairing code\" and keep that dialog open. Then pull down the notification shade and tap \"Enter pairing code\".</string>
     <string name="btn_open_adb">ADB connection setup</string>
     <string name="conn_tab_desc">Per-app CPU/RAM needs the built-in ADB connection. Open the setup screen to connect.</string>
+    <string name="pair_open_dialog">Open input box</string>
 </resources>

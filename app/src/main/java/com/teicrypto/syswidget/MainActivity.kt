@@ -23,8 +23,6 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 /**
  * Màn hình chính chỉ để hướng dẫn cấp quyền và bật popup Task Manager.
@@ -190,28 +188,12 @@ class MainActivity : Activity() {
         )
         setContentView(outer)
 
-        if (savedInstanceState == null) loadInterstitial()
 
         if (Build.VERSION.SDK_INT >= 33 &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
         }
-    }
-
-    private fun loadInterstitial() {
-        InterstitialAd.load(
-            this,
-            getString(R.string.admob_interstitial_id),
-            AdRequest.Builder().build(),
-            object : InterstitialAdLoadCallback() {
-                override fun onAdLoaded(ad: InterstitialAd) {
-                    if (!isFinishing && !isDestroyed) ad.show(this@MainActivity)
-                }
-
-                override fun onAdFailedToLoad(error: LoadAdError) {}
-            }
-        )
     }
 
     override fun onResume() {
