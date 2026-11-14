@@ -78,7 +78,7 @@
     <string name="pair_notif_ready_title">Pairing service found</string>
     <string name="pair_notif_enter">Pairing port found. Enter the 6-digit code from the pairing dialog.</string>
     <string name="pair_notif_action">Enter pairing code</string>
-    <string name="pair_notif_label">6-digit code</string>
+    <string name="pair_notif_label">6-digit code (or: port code)</string>
     <string name="pair_ok">Paired and connected</string>
     <string name="pair_no_port">Pairing port not found. Keep the pairing dialog open and try again.</string>
     <string name="pair_fail_fmt">Pairing failed: %1$s</string>
@@ -171,4 +171,6 @@
     <string name="conn_tab_desc">Per-app CPU/RAM needs the built-in ADB connection. Open the setup screen to connect.</string>
     <string name="pair_open_dialog">Open input box</string>
     <string name="pair_ok_noconn_fmt">Paired, but could not connect: %1$s. Keep Wi-Fi and Wireless debugging on, then open ADB connection and tap Start.</string>
+    <string name="adb_btn_log">Connection log</string>
+    <string name="adb_log_empty">(empty)</string>
 </resources>

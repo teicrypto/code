@@ -19,6 +19,7 @@ class PairingService : Service() {
 
     private val handler = Handler(Looper.getMainLooper())
     @Volatile private var working = false
+    @Volatile private var manualPort: Int? = null
 
     private fun str(id: Int, vararg args: Any): String = LocaleHelper.wrap(this).getString(id, *args)
 
@@ -41,7 +42,10 @@ class PairingService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val code = intent?.getStringExtra(PairNotif.EXTRA_CODE).orEmpty().filter { it.isDigit() }
+        // Nhập "mã" (6 số) hoặc "cổng mã" nếu muốn tự chỉ định cổng ghép nối trong hộp thoại hệ thống
+        val nums = Regex("\\d+").findAll(intent?.getStringExtra(PairNotif.EXTRA_CODE).orEmpty()).map { it.value }.toList()
+        val code = nums.lastOrNull().orEmpty()
+        manualPort = if (nums.size >= 2) nums[0].toIntOrNull() else null
         if (code.isEmpty() || working) {
             if (!working) stopSelf()
             return START_NOT_STICKY
@@ -57,7 +61,8 @@ class PairingService : Service() {
         PairNotif.post(this, str(R.string.pair_notif_ready_title), "…", false)
         Thread {
             // Hộp thoại ghép nối phải đang mở thì mới tìm thấy cổng
-            val port = NsdFinder.find(this, "_adb-tls-pairing._tcp", 8000) { false }
+            val port = manualPort ?: NsdFinder.find(this, "_adb-tls-pairing._tcp", 8000) { false }
+            PrivShell.log("pairing port=$port (manual=${manualPort != null})")
             val paired = port != null && PrivShell.pair(this, port, code)
             // Ghép nối xong adbd cần vài giây để công bố cổng kết nối: thử lại vài lần
             var ok = false

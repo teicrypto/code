@@ -68,7 +68,7 @@
     <string name="pair_notif_ready_title">已找到配对服务</string>
     <string name="pair_notif_enter">已找到配对端口，请输入配对对话框中的 6 位配对码。</string>
     <string name="pair_notif_action">输入配对码</string>
-    <string name="pair_notif_label">6 位配对码</string>
+    <string name="pair_notif_label">6 位配对码（或：端口 配对码）</string>
     <string name="pair_ok">已配对并连接</string>
     <string name="pair_no_port">未找到配对端口。请保持配对对话框打开后重试。</string>
     <string name="pair_fail_fmt">配对失败：%1$s</string>
@@ -161,4 +161,6 @@
     <string name="conn_tab_desc">查看各应用 CPU/内存需要内置 ADB 连接。请打开设置界面进行连接。</string>
     <string name="pair_open_dialog">打开输入框</string>
     <string name="pair_ok_noconn_fmt">已配对，但无法连接：%1$s。请保持 Wi-Fi 和无线调试开启，然后打开 ADB 连接并点击“启动”。</string>
+    <string name="adb_btn_log">连接日志</string>
+    <string name="adb_log_empty">（空）</string>
 </resources>

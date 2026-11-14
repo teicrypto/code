@@ -28,22 +28,37 @@ object PrivShell {
         private set
     private var lastAttempt = 0L
 
+    private val logBuf = StringBuilder()
+
+    @Synchronized
+    fun log(m: String) {
+        logBuf.append(java.text.SimpleDateFormat("HH:mm:ss", Locale.US).format(java.util.Date())).append(' ').append(m).append('\n')
+        if (logBuf.length > 6000) logBuf.delete(0, logBuf.length - 5000)
+    }
+
+    @Synchronized
+    fun logText(): String = logBuf.toString()
+
     fun state(): State = if (connected) State.READY else State.DISCONNECTED
 
     fun isPaired(ctx: Context): Boolean = Prefs.sp(ctx).getBoolean(KEY_PAIRED, false)
 
     /** Ghép nối bằng cổng + mã 6 số của hộp thoại "Ghép nối thiết bị bằng mã ghép nối". Blocking. */
     fun pair(ctx: Context, port: Int, code: String): Boolean = try {
+        log("pair $HOST:$port")
         val r: Any? = SysAdbManager.getInstance(ctx.applicationContext).pair(HOST, port, code)
         if (r == false) {
             lastError = "pair() = false"
+            log("pair: false")
             false
         } else {
+            log("pair: ok")
             Prefs.sp(ctx).edit().putBoolean(KEY_PAIRED, true).apply()
             true
         }
     } catch (e: Throwable) {
         lastError = e.message ?: e.javaClass.simpleName
+        log("pair error: ${e.javaClass.simpleName}: ${e.message}")
         false
     }
 
@@ -52,10 +67,12 @@ object PrivShell {
         return try {
             val r: Any? = SysAdbManager.getInstance(ctx.applicationContext).connect(HOST, port)
             connected = r != false
+            log("connect $port: " + if (connected) "ok" else "false")
             if (connected) Prefs.sp(ctx).edit().putInt(KEY_PORT, port).apply()
             connected
         } catch (e: Throwable) {
             lastError = e.message ?: e.javaClass.simpleName
+            log("connect $port error: ${e.javaClass.simpleName}: ${e.message}")
             connected = false
             false
         }
@@ -82,9 +99,11 @@ object PrivShell {
 
         // Cổng kết nối do adbd công bố trong thuộc tính hệ thống (nếu ROM cho đọc)
         val prop = tlsPortProp()
+        log("connect: saved=$saved prop=$prop")
         if (prop != null && prop != saved && tryConnect(ctx, prop)) return true
 
         val port = NsdFinder.find(ctx, CONNECT_TYPE, if (force) 12_000L else 6000L) { false }
+        log("connect: mDNS port=$port")
         if (port == null) {
             lastError = "no connect port (Wi-Fi / Wireless debugging off?)"
             return false

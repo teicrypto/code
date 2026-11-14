@@ -82,6 +82,7 @@ class AdbSetupActivity : Activity() {
         pc.addView(pRow)
         pc.addView(UiKit.body(this, getString(R.string.adb_card_pc_desc)).apply { setPadding(0, d(24), 0, d(8)) })
         pc.addView(UiKit.pill(this, getString(R.string.adb_btn_cmd), "‹›") { showCommand() })
+        pc.addView(UiKit.pill(this, getString(R.string.adb_btn_log), "☰") { showLog() })
         root.addView(pc)
 
         setContentView(ScrollView(this).apply {
@@ -96,6 +97,21 @@ class AdbSetupActivity : Activity() {
             .setTitle(R.string.adb_btn_guide)
             .setMessage(R.string.adb_guide_body)
             .setPositiveButton(android.R.string.ok, null)
+            .show()
+    }
+
+    private fun showLog() {
+        val text = PrivShell.logText().ifEmpty { getString(R.string.adb_log_empty) } +
+            (PrivShell.lastError?.let { "\nlastError: $it" } ?: "")
+        AlertDialog.Builder(this)
+            .setTitle(R.string.adb_btn_log)
+            .setMessage(text)
+            .setPositiveButton(R.string.adb_copy) { _, _ ->
+                (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
+                    .setPrimaryClip(ClipData.newPlainText("log", text))
+                Toast.makeText(this, R.string.adb_copied, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(android.R.string.ok, null)
             .show()
     }
 

@@ -9,7 +9,7 @@ import android.content.Intent
 class PairReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val code = RemoteInput.getResultsFromIntent(intent)?.getCharSequence(PairNotif.KEY_CODE)
-            ?.toString()?.filter { it.isDigit() }.orEmpty()
-        if (code.isNotEmpty()) PairNotif.submit(context, code)
+            ?.toString().orEmpty()
+        if (code.any { it.isDigit() }) PairNotif.submit(context, code)
     }
 }
