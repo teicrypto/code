@@ -131,7 +131,7 @@ class PairingActivity : Activity() {
         help.visibility = View.VISIBLE
         if (launched) return
         launched = true
-        startForegroundService(Intent(this, PairingService::class.java))
+        PairNotif.post(this, getString(R.string.pair_notif_wait_title), getString(R.string.pair_notif_wait_text), true)
         try {
             startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))
         } catch (e: Exception) {

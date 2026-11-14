@@ -87,6 +87,10 @@
         </service>
 
         <receiver
+            android:name=".PairReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".SysWidgetProvider"
             android:exported="true">
             <intent-filter>

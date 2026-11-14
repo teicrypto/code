@@ -46,11 +46,7 @@ class CodeDialogActivity : Activity() {
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun afterTextChanged(s: Editable?) {
                 if ((s?.length ?: 0) == 6) {
-                    startService(
-                        Intent(this@CodeDialogActivity, PairingService::class.java)
-                            .setAction(PairingService.ACTION_CODE)
-                            .putExtra(PairingService.EXTRA_CODE, s.toString())
-                    )
+                    PairNotif.submit(this@CodeDialogActivity, s.toString())
                     finish()
                 }
             }
