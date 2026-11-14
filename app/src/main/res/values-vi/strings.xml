@@ -173,4 +173,27 @@
     <string name="shz_btn_download">Tải Shizuku</string>
     <string name="shz_btn_grant">Cấp quyền</string>
     <string name="shz_guide_body">1. Cài Shizuku (bấm Tải Shizuku).\n2. Mở Shizuku, chọn \"Bắt đầu qua Gỡ lỗi không dây\": bật Tùy chọn nhà phát triển và Gỡ lỗi không dây, bấm Ghép nối, nhập mã ở thông báo, rồi bấm Bắt đầu. (Hoặc khởi động từ máy tính.)\n3. Quay lại đây và bấm Cấp quyền.\n4. Trạng thái chuyển xanh. Mở tab Tiến trình trong popup.</string>
+    <string name="osd_title">Popup thu nhỏ (OSD)</string>
+    <string name="osd_note">Chọn thông số hiện trên popup nhỏ, giống lớp phủ MSI Afterburner. Hầu hết cần Shizuku.</string>
+    <string name="osd_graphs">Hiện biểu đồ dưới từng thông số</string>
+    <string name="osd_interval_fmt">Làm mới mỗi: %1$s</string>
+    <string name="m_cpu_pct">Mức dùng CPU</string>
+    <string name="m_cpu_temp">Nhiệt độ CPU</string>
+    <string name="m_cpu_mhz">Xung CPU (trung bình)</string>
+    <string name="m_cpu_cores">Mức dùng từng nhân CPU</string>
+    <string name="m_cpu_core_mhz">Xung từng nhân CPU</string>
+    <string name="m_gpu_pct">Mức dùng GPU</string>
+    <string name="m_gpu_temp">Nhiệt độ GPU</string>
+    <string name="m_gpu_mhz">Xung GPU</string>
+    <string name="m_ram">Mức dùng RAM</string>
+    <string name="m_fps">FPS</string>
+    <string name="m_frametime">Thời gian khung hình</string>
+    <string name="m_batt">Mức pin</string>
+    <string name="m_batt_temp">Nhiệt độ pin</string>
+    <string name="m_power">Công suất pin</string>
+    <string name="m_net_down">Tốc độ tải xuống</string>
+    <string name="m_net_up">Tốc độ tải lên</string>
+    <string name="m_storage">Dung lượng bộ nhớ đã dùng</string>
+    <string name="m_clock">Đồng hồ</string>
+    <string name="m_uptime">Thời gian bật máy</string>
 </resources>

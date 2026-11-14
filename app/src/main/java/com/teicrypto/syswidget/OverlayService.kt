@@ -7,12 +7,14 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -45,7 +47,6 @@ class OverlayService : Service() {
 
     companion object {
         @Volatile var running = false
-        private const val PERIOD = 2500L
     }
 
     private class ProcRow(
@@ -55,7 +56,10 @@ class OverlayService : Service() {
     private lateinit var wm: WindowManager
     private lateinit var params: WindowManager.LayoutParams
     private lateinit var root: LinearLayout
-    private lateinit var bubble: TextView
+    private lateinit var bubble: LinearLayout
+
+    private class OsdRow(val def: Osd.Def, val text: TextView, val chart: LineChartView?)
+    private val osdRows = ArrayList<OsdRow>()
     private lateinit var panel: LinearLayout
     private lateinit var collector: StatsCollector
     private val handler = Handler(Looper.getMainLooper())
@@ -90,8 +94,10 @@ class OverlayService : Service() {
     private val tabContents = ArrayList<View>()
 
     private val prefListener = SharedPreferences.OnSharedPreferenceChangeListener { _, k ->
-        if (k == Prefs.LANG) rebuild()
+        if (k == Prefs.LANG || (k != null && k.startsWith("osd_"))) rebuild()
     }
+
+    private fun period(): Long = Osd.interval(this).toLong().coerceIn(300L, 5000L)
 
     private fun dp(v: Int) = (v * density).toInt()
     private fun str(id: Int, vararg a: Any): String = LocaleHelper.wrap(this).getString(id, *a)
@@ -102,7 +108,7 @@ class OverlayService : Service() {
         override fun run() {
             if (!added) return
             if (fetching) {
-                handler.postDelayed(this, PERIOD)
+                handler.postDelayed(this, period())
                 return
             }
             fetching = true
@@ -119,7 +125,7 @@ class OverlayService : Service() {
                 handler.post {
                     fetching = false
                     if (added) apply(s, snap, cpuByPkg)
-                    if (added) handler.postDelayed(this, PERIOD)
+                    if (added) handler.postDelayed(this, period())
                 }
             }.start()
         }
@@ -138,12 +144,7 @@ class OverlayService : Service() {
         val gpuT = snap?.gpuTemp
         val fps = snap?.fps
 
-        val gpuPart = when {
-            gpuT != null -> "${gpuT.toInt()}°C"
-            gpuPct != null -> "$gpuPct%"
-            else -> "--"
-        }
-        bubble.text = "CPU ${p(cpuPct)} · ${cpuT.toInt()}°C\nGPU $gpuPart · ${fps?.toString() ?: "--"} FPS"
+        if (!expanded) updateOsd(s, snap, cpuPct, cpuT, gpuPct, gpuT, fps)
 
         if (snap != null) {
             ramMap = snap.ramKb
@@ -180,6 +181,54 @@ class OverlayService : Service() {
         }
 
         if (tab == 1) renderProc(connected)
+    }
+
+    private fun updateOsd(
+        s: Stats, snap: PrivShell.Snap?, cpuPct: Int, cpuT: Double, gpuPct: Int?, gpuT: Double?, fps: Int?
+    ) {
+        if (osdRows.isEmpty()) return
+        val bi = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val battTemp = (bi?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) ?: 0) / 10.0
+        val mv = bi?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) ?: 0
+        val ua = try {
+            (getSystemService(BATTERY_SERVICE) as BatteryManager).getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        } catch (e: Throwable) { 0 }
+        val mA = if (Math.abs(ua) >= 10_000) ua / 1000 else ua // một số máy báo thẳng mA
+        val watts = Math.abs(mA) / 1000.0 * mv / 1000.0
+        val mhzAvg = snap?.mhz?.values?.takeIf { it.isNotEmpty() }?.average()?.toInt()
+
+        fun grid(vals: List<String>): String =
+            vals.chunked(4).joinToString("\n") { it.joinToString("  ") }
+
+        for (r in osdRows) {
+            var v: Float? = null
+            val text = when (r.def.id) {
+                "cpu_pct" -> { v = cpuPct.coerceAtLeast(0).toFloat(); "CPU  ${if (cpuPct >= 0) "$cpuPct%" else "--"}" }
+                "cpu_temp" -> "CPU  ${cpuT.toInt()}°C"
+                "cpu_mhz" -> "CPU  ${mhzAvg ?: "--"} MHz"
+                "cpu_cores" -> snap?.cores?.takeIf { it.isNotEmpty() }
+                    ?.let { c -> grid(c.mapIndexed { i, x -> "C$i ${x}%" }) } ?: "CORES --"
+                "cpu_core_mhz" -> snap?.mhz?.takeIf { it.isNotEmpty() }
+                    ?.let { m -> grid(m.toSortedMap().map { "C${it.key} ${it.value}" }) } ?: "MHz --"
+                "gpu_pct" -> { v = (gpuPct ?: 0).toFloat(); "GPU  ${gpuPct?.let { "$it%" } ?: "--"}" }
+                "gpu_temp" -> "GPU  ${gpuT?.let { "${it.toInt()}°C" } ?: "--"}"
+                "gpu_mhz" -> "GPU  ${snap?.gpuMhz ?: "--"} MHz"
+                "ram" -> { v = s.ramPct.toFloat(); "RAM  ${s.ramPct}% ${s.ramInfo}" }
+                "fps" -> { v = (fps ?: 0).toFloat(); "FPS  ${fps ?: "--"}" }
+                "frametime" -> "FT   ${fps?.takeIf { it > 0 }?.let { String.format(Locale.US, "%.1f ms", 1000f / it) } ?: "--"}"
+                "batt" -> { v = s.battPct.toFloat(); "BAT  ${s.battPct}%" }
+                "batt_temp" -> "BAT  ${String.format(Locale.US, "%.1f", battTemp)}°C"
+                "power" -> "PWR  ${String.format(Locale.US, "%.2f W", watts)} (${Math.abs(mA)} mA)"
+                "net_down" -> { v = s.downBps.toFloat(); "DL   ${shortSpeed(s.downBps)}/s" }
+                "net_up" -> "UL   ${shortSpeed(s.upBps)}/s"
+                "storage" -> "DISK ${s.storagePct}%"
+                "clock" -> java.text.SimpleDateFormat("HH:mm:ss", Locale.US).format(java.util.Date())
+                "uptime" -> "UP   ${s.uptime}"
+                else -> ""
+            }
+            r.text.text = text
+            if (v != null) r.chart?.add(v, "")
+        }
     }
 
     // ---------------- Vòng đời ----------------
@@ -323,16 +372,28 @@ class OverlayService : Service() {
         procRows.clear()
         root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
 
-        bubble = TextView(this).apply {
-            textSize = 11f
-            setTextColor(Color.WHITE)
-            setTypeface(null, Typeface.BOLD)
-            gravity = Gravity.CENTER
-            setPadding(dp(12), dp(7), dp(12), dp(7))
-            background = rounded("#EE111418", 18)
-            text = "CPU … \nGPU …"
+        bubble = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(9), dp(6), dp(11), dp(6))
+            background = rounded("#B3000000", 10)
             visibility = if (expanded) View.GONE else View.VISIBLE
         }
+        osdRows.clear()
+        val showGraphs = Osd.graphs(this)
+        for (def in Osd.all) {
+            if (!Osd.on(this, def)) continue
+            val row = tv("…", 11.5f, def.color, bold = true, mono = true).apply {
+                setShadowLayer(3f, 0f, 0f, Color.BLACK)
+            }
+            bubble.addView(row)
+            var chart: LineChartView? = null
+            if (showGraphs && def.graph) {
+                chart = LineChartView(this, "", Color.parseColor(def.color), def.gMax, def.gMin, true)
+                bubble.addView(chart, LinearLayout.LayoutParams(dp(130), dp(26)))
+            }
+            osdRows.add(OsdRow(def, row, chart))
+        }
+        if (osdRows.isEmpty()) bubble.addView(tv("SysWidget", 12f, "#FFFFFF", bold = true))
 
         panel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL

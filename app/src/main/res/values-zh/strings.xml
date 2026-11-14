@@ -173,4 +173,27 @@
     <string name="shz_btn_download">获取 Shizuku</string>
     <string name="shz_btn_grant">授权</string>
     <string name="shz_guide_body">1. 安装 Shizuku（点击“获取 Shizuku”）。\n2. 打开 Shizuku，选择“通过无线调试启动”：开启开发者选项和无线调试，点击配对，在通知中输入配对码，然后点击启动。（也可通过电脑启动。）\n3. 返回此处点击“授权”。\n4. 状态变绿后，在悬浮窗中打开“进程”标签。</string>
+    <string name="osd_title">收起悬浮窗（OSD）</string>
+    <string name="osd_note">选择小悬浮窗显示的数据，类似 MSI Afterburner 叠加层。大部分需要 Shizuku。</string>
+    <string name="osd_graphs">在每项数据下显示图表</string>
+    <string name="osd_interval_fmt">刷新间隔：%1$s</string>
+    <string name="m_cpu_pct">CPU 占用</string>
+    <string name="m_cpu_temp">CPU 温度</string>
+    <string name="m_cpu_mhz">CPU 频率（平均）</string>
+    <string name="m_cpu_cores">各核心占用</string>
+    <string name="m_cpu_core_mhz">各核心频率</string>
+    <string name="m_gpu_pct">GPU 占用</string>
+    <string name="m_gpu_temp">GPU 温度</string>
+    <string name="m_gpu_mhz">GPU 频率</string>
+    <string name="m_ram">内存占用</string>
+    <string name="m_fps">FPS</string>
+    <string name="m_frametime">帧时间</string>
+    <string name="m_batt">电量</string>
+    <string name="m_batt_temp">电池温度</string>
+    <string name="m_power">电池功率</string>
+    <string name="m_net_down">下载速度</string>
+    <string name="m_net_up">上传速度</string>
+    <string name="m_storage">存储占用</string>
+    <string name="m_clock">时钟</string>
+    <string name="m_uptime">开机时间</string>
 </resources>

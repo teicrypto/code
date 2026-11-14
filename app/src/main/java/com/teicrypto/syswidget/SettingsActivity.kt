@@ -95,8 +95,37 @@ class SettingsActivity : Activity() {
             }
 
         root.addView(section(getString(R.string.settings_section_popup)))
-        root.addView(toggle(R.string.settings_mini_charts, Prefs.MINI_CHARTS, true))
-        root.addView(toggle(R.string.settings_bubble_extra, Prefs.BUBBLE_EXTRA, true))
+
+        // ---- Popup thu nhỏ (OSD kiểu MSI Afterburner) ----
+        root.addView(section(getString(R.string.osd_title)))
+        root.addView(TextView(this).apply {
+            text = getString(R.string.osd_note)
+            textSize = 12f
+            setTextColor(Color.parseColor("#8A94A0"))
+            setPadding(0, 0, 0, pad / 2)
+        })
+        val intervalBtn = Button(this)
+        fun updateIntervalText() {
+            val ms = Osd.interval(this)
+            intervalBtn.text = getString(R.string.osd_interval_fmt, if (ms % 1000 == 0) "${ms / 1000} s" else "${ms / 1000.0} s")
+        }
+        updateIntervalText()
+        intervalBtn.setOnClickListener {
+            val opts = listOf(500, 1000, 2000, 3000)
+            AlertDialog.Builder(this)
+                .setSingleChoiceItems(
+                    opts.map { if (it % 1000 == 0) "${it / 1000} s" else "${it / 1000.0} s" }.toTypedArray(),
+                    opts.indexOf(Osd.interval(this))
+                ) { dialog, which ->
+                    Prefs.sp(this).edit().putInt(Osd.INTERVAL, opts[which]).apply()
+                    updateIntervalText()
+                    dialog.dismiss()
+                }
+                .show()
+        }
+        root.addView(intervalBtn)
+        root.addView(toggle(R.string.osd_graphs, Osd.GRAPHS, false))
+        for (d in Osd.all) root.addView(toggle(d.label, Osd.key(d.id), d.def))
 
         // ---- Thanh trạng thái ----
         root.addView(section(getString(R.string.settings_section_status)))

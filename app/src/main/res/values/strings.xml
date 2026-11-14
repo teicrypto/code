@@ -183,4 +183,27 @@
     <string name="shz_btn_download">Get Shizuku</string>
     <string name="shz_btn_grant">Grant permission</string>
     <string name="shz_guide_body">1. Install Shizuku (tap Get Shizuku).\n2. Open Shizuku and choose \"Start via Wireless debugging\": enable Developer options and Wireless debugging, tap Pairing, enter the code from the notification, then tap Start. (Or start it from a computer.)\n3. Come back here and tap Grant permission.\n4. Status turns green. Open the Processes tab in the popup.</string>
+    <string name="osd_title">Collapsed popup (overlay)</string>
+    <string name="osd_note">Choose what the small popup shows, like an MSI Afterburner overlay. Most values need Shizuku.</string>
+    <string name="osd_graphs">Show graphs under each value</string>
+    <string name="osd_interval_fmt">Refresh every: %1$s</string>
+    <string name="m_cpu_pct">CPU usage</string>
+    <string name="m_cpu_temp">CPU temperature</string>
+    <string name="m_cpu_mhz">CPU clock (average)</string>
+    <string name="m_cpu_cores">CPU usage per core</string>
+    <string name="m_cpu_core_mhz">CPU clock per core</string>
+    <string name="m_gpu_pct">GPU usage</string>
+    <string name="m_gpu_temp">GPU temperature</string>
+    <string name="m_gpu_mhz">GPU clock</string>
+    <string name="m_ram">RAM usage</string>
+    <string name="m_fps">FPS</string>
+    <string name="m_frametime">Frame time</string>
+    <string name="m_batt">Battery level</string>
+    <string name="m_batt_temp">Battery temperature</string>
+    <string name="m_power">Battery power</string>
+    <string name="m_net_down">Download speed</string>
+    <string name="m_net_up">Upload speed</string>
+    <string name="m_storage">Storage usage</string>
+    <string name="m_clock">Clock</string>
+    <string name="m_uptime">Uptime</string>
 </resources>
