@@ -50,17 +50,6 @@ object PairNotif {
                     Icon.createWithResource(ctx, R.drawable.ic_app), str(ctx, R.string.pair_notif_action), pi
                 ).addRemoteInput(ri).build()
             )
-            // Dự phòng: hộp nhập riêng cho ROM không hiện ô trả lời
-            val open = PendingIntent.getActivity(
-                ctx, 2,
-                Intent(ctx, CodeDialogActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            b.addAction(
-                Notification.Action.Builder(
-                    Icon.createWithResource(ctx, R.drawable.ic_app), str(ctx, R.string.pair_open_dialog), open
-                ).build()
-            )
         }
         return b.build()
     }

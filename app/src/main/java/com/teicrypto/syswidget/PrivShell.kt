@@ -80,12 +80,25 @@ object PrivShell {
         val saved = Prefs.sp(ctx).getInt(KEY_PORT, 0)
         if (saved > 0 && saved != TCPIP_PORT && tryConnect(ctx, saved)) return true
 
-        val port = NsdFinder.find(ctx, CONNECT_TYPE, 6000) { false }
+        // Cổng kết nối do adbd công bố trong thuộc tính hệ thống (nếu ROM cho đọc)
+        val prop = tlsPortProp()
+        if (prop != null && prop != saved && tryConnect(ctx, prop)) return true
+
+        val port = NsdFinder.find(ctx, CONNECT_TYPE, if (force) 12_000L else 6000L) { false }
         if (port == null) {
             lastError = "no connect port (Wi-Fi / Wireless debugging off?)"
             return false
         }
         return tryConnect(ctx, port)
+    }
+
+    private fun tlsPortProp(): Int? = try {
+        val p = ProcessBuilder("getprop", "service.adb.tls.port").redirectErrorStream(true).start()
+        val s = p.inputStream.bufferedReader().readText().trim()
+        p.waitFor()
+        s.toIntOrNull()?.takeIf { it > 0 }
+    } catch (e: Throwable) {
+        null
     }
 
     /** Chạy lệnh shell từ bên ngoài. Blocking. */

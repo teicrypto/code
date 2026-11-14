@@ -59,19 +59,28 @@ class PairingService : Service() {
             // Hộp thoại ghép nối phải đang mở thì mới tìm thấy cổng
             val port = NsdFinder.find(this, "_adb-tls-pairing._tcp", 8000) { false }
             val paired = port != null && PrivShell.pair(this, port, code)
-            val ok = paired && PrivShell.connect(this, force = true)
+            // Ghép nối xong adbd cần vài giây để công bố cổng kết nối: thử lại vài lần
+            var ok = false
+            if (paired) {
+                for (i in 0 until 3) {
+                    ok = PrivShell.connect(this, force = true)
+                    if (ok) break
+                    Thread.sleep(2000)
+                }
+            }
             val msg = when {
                 ok -> str(R.string.pair_ok)
                 port == null -> str(R.string.pair_no_port)
-                else -> str(R.string.pair_fail_fmt, PrivShell.lastError ?: "?")
+                !paired -> str(R.string.pair_fail_fmt, PrivShell.lastError ?: "?")
+                else -> str(R.string.pair_ok_noconn_fmt, PrivShell.lastError ?: "?")
             }
             handler.post {
                 if (ok) {
                     PairNotif.post(this, str(R.string.pair_notif_ready_title), msg, false)
                     handler.postDelayed({ PairNotif.cancel(this); stopSelf() }, 2500)
                 } else {
-                    // Lỗi: hiện lại ô nhập để thử lại
-                    PairNotif.post(this, str(R.string.pair_notif_ready_title), msg, true)
+                    // Chưa ghép nối được: hiện lại ô nhập. Đã ghép nối nhưng chưa nối: chỉ báo lỗi.
+                    PairNotif.post(this, str(R.string.pair_notif_ready_title), msg, !paired)
                     stopSelf()
                 }
             }

@@ -170,4 +170,5 @@
     <string name="btn_open_adb">ADB connection setup</string>
     <string name="conn_tab_desc">Per-app CPU/RAM needs the built-in ADB connection. Open the setup screen to connect.</string>
     <string name="pair_open_dialog">Open input box</string>
+    <string name="pair_ok_noconn_fmt">Paired, but could not connect: %1$s. Keep Wi-Fi and Wireless debugging on, then open ADB connection and tap Start.</string>
 </resources>
