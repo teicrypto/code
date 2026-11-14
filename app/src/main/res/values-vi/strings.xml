@@ -2,7 +2,7 @@
 <resources>
     <string name="widget_desc">CPU, GPU, RAM, bộ nhớ, pin, mạng</string>
 
-    <string name="main_howto">1) Bấm \"Bật cập nhật\".\n2) Nhấn giữ màn hình chính → Widget → SysWidget.</string>
+    <string name="main_howto">1) Bấm \"Bật cập nhật\".\n2) Nhấn giữ màn hình chính → Widget → SysPulse.</string>
     <string name="btn_start_updates">Bật cập nhật</string>
     <string name="btn_stop">Tắt</string>
     <string name="btn_start_popup">Bật cửa sổ nổi</string>
@@ -26,10 +26,6 @@
     <string name="temp_batt_fmt">Pin %1$.0f°C</string>
     <string name="uptime_fmt">Bật %1$dh%2$02dm</string>
 
-    <string name="ad_loaded">AdMob: đã tải quảng cáo</string>
-    <string name="ad_error_fmt">AdMob lỗi %1$d: %2$s</string>
-    <string name="ad_inter_error_fmt">AdMob toàn màn hình lỗi %1$d: %2$s</string>
-
     <string name="overlay_no_permission">Chưa cấp quyền hiển thị trên ứng dụng khác</string>
     <string name="overlay_refresh">Làm mới</string>
     <string name="overlay_close">Đóng cửa sổ</string>
@@ -45,13 +41,13 @@
 
     <string name="notif_channel">Thông số hệ thống</string>
     <string name="notif_channel_bar">Thông số trên thanh trạng thái</string>
-    <string name="notif_widget_title">SysWidget đang cập nhật widget</string>
-    <string name="notif_overlay_title">Cửa sổ nổi SysWidget đang bật</string>
+    <string name="notif_widget_title">SysPulse đang cập nhật widget</string>
+    <string name="notif_overlay_title">Cửa sổ nổi SysPulse đang bật</string>
 
     <string name="cpu_apps_title">App ăn CPU nhiều nhất</string>
     <string name="cpu_apps_error">Không đọc được dữ liệu CPU</string>
     <string name="ram_apps_title">App ăn RAM nhiều nhất</string>
-    <string name="apps_need_adb">Xem CPU/RAM từng app cần ADB tích hợp. Mở app SysWidget để ghép nối.</string>
+    <string name="apps_need_adb">Xem CPU/RAM từng app cần ADB tích hợp. Mở app SysPulse để ghép nối.</string>
     <string name="adb_section">Mức dùng từng app (ADB tích hợp)</string>
     <string name="adb_ready">Shizuku: đã kết nối</string>
     <string name="adb_disconnected">Shizuku: chưa kết nối. Mở màn hình kết nối.</string>
@@ -110,8 +106,8 @@
     <string name="metric_temp">Nhiệt độ</string>
     <string name="a11y_desc">Chỉ dùng lúc thiết lập để đọc mã ghép nối trong Cài đặt và tự ghép nối. Không thu thập hay gửi dữ liệu nào.</string>
     <string name="step3_btn_auto">Tự động ghép nối</string>
-    <string name="step3_need_a11y">Bật SysWidget trong Trợ năng, rồi quay lại bấm Tự động ghép nối</string>
-    <string name="step3_desc_auto">Bấm Tự động ghép nối. App tự mở Gỡ lỗi không dây và tự ghép nối. Lần đầu sẽ nhờ bạn bật SysWidget trong Trợ năng.</string>
+    <string name="step3_need_a11y">Bật SysPulse trong Trợ năng, rồi quay lại bấm Tự động ghép nối</string>
+    <string name="step3_desc_auto">Bấm Tự động ghép nối. App tự mở Gỡ lỗi không dây và tự ghép nối. Lần đầu sẽ nhờ bạn bật SysPulse trong Trợ năng.</string>
     <string name="pop_title">Task Manager</string>
     <string name="tab_perf">Hiệu suất</string>
     <string name="tab_proc">Tiến trình</string>
@@ -130,7 +126,7 @@
     <string name="btn_pair">Ghép nối</string>
     <string name="conn_searching">Đang xử lý…</string>
     <string name="conn_port_found_fmt">Đã tìm thấy cổng: %1$d. Giờ gõ mã 6 số.</string>
-    <string name="onb_intro">Cho phép SysWidget hiển thị Task Manager nổi trên các app khác. Mọi thông số, biểu đồ, mức dùng từng app và kết nối đều nằm trong popup.</string>
+    <string name="onb_intro">Cho phép SysPulse hiển thị Task Manager nổi trên các app khác. Mọi thông số, biểu đồ, mức dùng từng app và kết nối đều nằm trong popup.</string>
     <string name="onb_overlay_ok">✓ Hiển thị trên ứng dụng khác: đã cho phép</string>
     <string name="onb_overlay_need">Hiển thị trên ứng dụng khác: chưa cho phép</string>
     <string name="onb_overlay_btn">Cho phép hiển thị trên ứng dụng khác</string>
@@ -154,7 +150,7 @@
     <string name="adb_copied">Đã sao chép</string>
     <string name="adb_guide_body">1. Kết nối Wi-Fi.\n2. Bật Tùy chọn nhà phát triển (bấm 7 lần vào Số bản dựng trong Thông tin điện thoại).\n3. Bấm Ghép nối ở đây. Cho phép thông báo nếu được hỏi.\n4. Trong Gỡ lỗi không dây, bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở.\n5. Vuốt thanh thông báo xuống, bấm \"Nhập mã ghép nối\" và gõ 6 số.\n6. Khi báo đã kết nối là xong. Bấm Bắt đầu nếu chưa tự kết nối.</string>
     <string name="pairing_title">Ghép nối</string>
-    <string name="pairing_need_notif">Quá trình ghép nối cần bạn thao tác với một thông báo của SysWidget. Hãy cho phép SysWidget gửi thông báo.</string>
+    <string name="pairing_need_notif">Quá trình ghép nối cần bạn thao tác với một thông báo của SysPulse. Hãy cho phép SysPulse gửi thông báo.</string>
     <string name="pairing_notif_options">Tùy chọn thông báo</string>
     <string name="pairing_help">Đang mở Gỡ lỗi không dây. Hãy bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở. Sau đó vuốt thanh thông báo xuống và bấm \"Nhập mã ghép nối\".</string>
     <string name="btn_open_adb">Kết nối Shizuku</string>
@@ -168,7 +164,7 @@
     <string name="shz_status_perm">Cần cấp quyền</string>
     <string name="shz_status_ready">Đã kết nối qua Shizuku (%1$s)</string>
     <string name="shz_card_title">Shizuku</string>
-    <string name="shz_card_desc">SysWidget dùng Shizuku để đọc CPU/RAM từng app, GPU và FPS. Hãy cài và khởi động Shizuku, rồi cấp quyền cho SysWidget.</string>
+    <string name="shz_card_desc">SysPulse dùng Shizuku để đọc CPU/RAM từng app, GPU và FPS. Hãy cài và khởi động Shizuku, rồi cấp quyền cho SysPulse.</string>
     <string name="shz_btn_open">Mở Shizuku</string>
     <string name="shz_btn_download">Tải Shizuku</string>
     <string name="shz_btn_grant">Cấp quyền</string>
@@ -196,4 +192,41 @@
     <string name="m_storage">Dung lượng bộ nhớ đã dùng</string>
     <string name="m_clock">Đồng hồ</string>
     <string name="m_uptime">Thời gian bật máy</string>
+    <string name="acc_title">Tài khoản</string>
+    <string name="acc_signin">Đăng nhập</string>
+    <string name="acc_register">Đăng ký</string>
+    <string name="acc_signout">Đăng xuất</string>
+    <string name="acc_email">Email</string>
+    <string name="acc_password">Mật khẩu</string>
+    <string name="acc_confirm">Nhập lại mật khẩu</string>
+    <string name="acc_google">Tiếp tục với Google</string>
+    <string name="acc_forgot">Quên mật khẩu?</string>
+    <string name="acc_reset_sent">Đã gửi email đặt lại mật khẩu</string>
+    <string name="acc_enter_email">Hãy nhập email trước</string>
+    <string name="acc_err_empty">Hãy nhập email và mật khẩu</string>
+    <string name="acc_err_mismatch">Mật khẩu nhập lại không khớp</string>
+    <string name="acc_err_weak">Mật khẩu tối thiểu 6 ký tự</string>
+    <string name="acc_err_invalid">Sai email hoặc mật khẩu</string>
+    <string name="acc_err_exists">Email này đã được đăng ký</string>
+    <string name="acc_err_email">Email không hợp lệ</string>
+    <string name="acc_err_network">Lỗi mạng, hãy kiểm tra kết nối</string>
+    <string name="acc_err_google_cfg">Chưa cấu hình đăng nhập Google: hãy thêm SHA-1 trong Firebase rồi tải lại google-services.json</string>
+    <string name="acc_err_generic_fmt">Lỗi: %1$s</string>
+    <string name="acc_verify_sent">Đã gửi email xác thực</string>
+    <string name="acc_logged_out">Đã đăng xuất</string>
+    <string name="acc_uid">Mã người dùng (UID)</string>
+    <string name="acc_plan">Gói</string>
+    <string name="plan_free">Miễn phí</string>
+    <string name="plan_monthly">Premium theo tháng</string>
+    <string name="plan_lifetime">Premium trọn đời</string>
+    <string name="acc_expires_fmt">Hết hạn: %1$s</string>
+    <string name="acc_verified">Email đã xác thực</string>
+    <string name="acc_not_verified">Email chưa xác thực</string>
+    <string name="acc_send_verify">Gửi email xác thực</string>
+    <string name="acc_refresh">Làm mới gói</string>
+    <string name="acc_signed_out_hint">Đăng nhập để đồng bộ gói của bạn</string>
+    <string name="acc_open_profile">Hồ sơ</string>
+    <string name="acc_loading">Đang tải…</string>
+    <string name="acc_switch_to_register">Chưa có tài khoản? Đăng ký</string>
+    <string name="acc_switch_to_login">Đã có tài khoản? Đăng nhập</string>
 </resources>

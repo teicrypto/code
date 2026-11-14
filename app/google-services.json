@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "496658286692",
+    "project_id": "syspulse-7c44b",
+    "storage_bucket": "syspulse-7c44b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:496658286692:android:d1c52e473d3e839ed97771",
+        "android_client_info": {
+          "package_name": "com.teicrypto.syspulse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsCC7e4tqQvvoDP2fXIJIHI-OgstQC7kA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

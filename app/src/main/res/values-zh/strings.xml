@@ -2,7 +2,7 @@
 <resources>
     <string name="widget_desc">CPU、GPU、内存、存储、电池、网络</string>
 
-    <string name="main_howto">1) 点击“开启更新”。\n2) 长按主屏幕 → 小部件 → SysWidget。</string>
+    <string name="main_howto">1) 点击“开启更新”。\n2) 长按主屏幕 → 小部件 → SysPulse。</string>
     <string name="btn_start_updates">开启更新</string>
     <string name="btn_stop">关闭</string>
     <string name="btn_start_popup">开启悬浮窗</string>
@@ -26,10 +26,6 @@
     <string name="temp_batt_fmt">电池 %1$.0f°C</string>
     <string name="uptime_fmt">已运行 %1$d小时%2$02d分</string>
 
-    <string name="ad_loaded">AdMob：广告已加载</string>
-    <string name="ad_error_fmt">AdMob 错误 %1$d：%2$s</string>
-    <string name="ad_inter_error_fmt">AdMob 全屏广告错误 %1$d：%2$s</string>
-
     <string name="overlay_no_permission">尚未授予悬浮窗权限</string>
     <string name="overlay_refresh">刷新</string>
     <string name="overlay_close">关闭悬浮窗</string>
@@ -45,13 +41,13 @@
 
     <string name="notif_channel">系统信息</string>
     <string name="notif_channel_bar">状态栏信息</string>
-    <string name="notif_widget_title">SysWidget 正在更新小部件</string>
-    <string name="notif_overlay_title">SysWidget 悬浮窗已开启</string>
+    <string name="notif_widget_title">SysPulse 正在更新小部件</string>
+    <string name="notif_overlay_title">SysPulse 悬浮窗已开启</string>
 
     <string name="cpu_apps_title">CPU 占用最高的应用</string>
     <string name="cpu_apps_error">无法读取 CPU 数据</string>
     <string name="ram_apps_title">内存占用最高的应用</string>
-    <string name="apps_need_adb">查看各应用 CPU/内存需要内置 ADB，请打开 SysWidget 应用进行配对。</string>
+    <string name="apps_need_adb">查看各应用 CPU/内存需要内置 ADB，请打开 SysPulse 应用进行配对。</string>
     <string name="adb_section">各应用占用（内置 ADB）</string>
     <string name="adb_ready">Shizuku：已连接</string>
     <string name="adb_disconnected">Shizuku：未连接。请打开连接界面。</string>
@@ -110,8 +106,8 @@
     <string name="metric_temp">温度</string>
     <string name="a11y_desc">仅在设置时使用，用于读取设置中的配对码并自动配对。不收集也不发送任何数据。</string>
     <string name="step3_btn_auto">自动配对</string>
-    <string name="step3_need_a11y">请在无障碍中开启 SysWidget，然后返回点击“自动配对”</string>
-    <string name="step3_desc_auto">点击“自动配对”。应用会打开无线调试并自动完成配对。首次使用需在无障碍中开启 SysWidget。</string>
+    <string name="step3_need_a11y">请在无障碍中开启 SysPulse，然后返回点击“自动配对”</string>
+    <string name="step3_desc_auto">点击“自动配对”。应用会打开无线调试并自动完成配对。首次使用需在无障碍中开启 SysPulse。</string>
     <string name="pop_title">任务管理器</string>
     <string name="tab_perf">性能</string>
     <string name="tab_proc">进程</string>
@@ -130,7 +126,7 @@
     <string name="btn_pair">配对</string>
     <string name="conn_searching">处理中…</string>
     <string name="conn_port_found_fmt">已找到端口：%1$d。请输入 6 位配对码。</string>
-    <string name="onb_intro">允许 SysWidget 在其他应用上层显示悬浮任务管理器。所有数据、图表、各应用占用和连接设置都在悬浮窗内。</string>
+    <string name="onb_intro">允许 SysPulse 在其他应用上层显示悬浮任务管理器。所有数据、图表、各应用占用和连接设置都在悬浮窗内。</string>
     <string name="onb_overlay_ok">✓ 显示在其他应用上层：已允许</string>
     <string name="onb_overlay_need">显示在其他应用上层：尚未允许</string>
     <string name="onb_overlay_btn">允许显示在其他应用上层</string>
@@ -154,7 +150,7 @@
     <string name="adb_copied">已复制</string>
     <string name="adb_guide_body">1. 连接 Wi-Fi。\n2. 开启开发者选项（在“关于手机”连续点击版本号 7 次）。\n3. 点击这里的“配对”，如有提示请允许通知。\n4. 在无线调试中开启它，点击“使用配对码配对设备”并保持对话框打开。\n5. 下拉通知栏，点击“输入配对码”并输入 6 位数字。\n6. 显示已连接即完成。若未自动连接，请点击“启动”。</string>
     <string name="pairing_title">配对</string>
-    <string name="pairing_need_notif">配对过程需要您操作 SysWidget 的通知。请允许 SysWidget 发送通知。</string>
+    <string name="pairing_need_notif">配对过程需要您操作 SysPulse 的通知。请允许 SysPulse 发送通知。</string>
     <string name="pairing_notif_options">通知选项</string>
     <string name="pairing_help">正在打开无线调试。请开启它，点击“使用配对码配对设备”并保持该对话框打开，然后下拉通知栏并点击“输入配对码”。</string>
     <string name="btn_open_adb">Shizuku 连接</string>
@@ -168,7 +164,7 @@
     <string name="shz_status_perm">需要授权</string>
     <string name="shz_status_ready">已通过 Shizuku 连接（%1$s）</string>
     <string name="shz_card_title">Shizuku</string>
-    <string name="shz_card_desc">SysWidget 使用 Shizuku 读取各应用 CPU/内存、GPU 和 FPS。请安装并启动 Shizuku，然后授权 SysWidget。</string>
+    <string name="shz_card_desc">SysPulse 使用 Shizuku 读取各应用 CPU/内存、GPU 和 FPS。请安装并启动 Shizuku，然后授权 SysPulse。</string>
     <string name="shz_btn_open">打开 Shizuku</string>
     <string name="shz_btn_download">获取 Shizuku</string>
     <string name="shz_btn_grant">授权</string>
@@ -196,4 +192,41 @@
     <string name="m_storage">存储占用</string>
     <string name="m_clock">时钟</string>
     <string name="m_uptime">开机时间</string>
+    <string name="acc_title">账户</string>
+    <string name="acc_signin">登录</string>
+    <string name="acc_register">注册</string>
+    <string name="acc_signout">退出登录</string>
+    <string name="acc_email">邮箱</string>
+    <string name="acc_password">密码</string>
+    <string name="acc_confirm">确认密码</string>
+    <string name="acc_google">使用 Google 继续</string>
+    <string name="acc_forgot">忘记密码？</string>
+    <string name="acc_reset_sent">已发送重置密码邮件</string>
+    <string name="acc_enter_email">请先输入邮箱</string>
+    <string name="acc_err_empty">请输入邮箱和密码</string>
+    <string name="acc_err_mismatch">两次密码不一致</string>
+    <string name="acc_err_weak">密码至少 6 位</string>
+    <string name="acc_err_invalid">邮箱或密码错误</string>
+    <string name="acc_err_exists">该邮箱已注册</string>
+    <string name="acc_err_email">邮箱格式无效</string>
+    <string name="acc_err_network">网络错误，请检查连接</string>
+    <string name="acc_err_google_cfg">尚未配置 Google 登录：请在 Firebase 中添加 SHA-1 并重新下载 google-services.json</string>
+    <string name="acc_err_generic_fmt">错误：%1$s</string>
+    <string name="acc_verify_sent">已发送验证邮件</string>
+    <string name="acc_logged_out">已退出登录</string>
+    <string name="acc_uid">用户 ID (UID)</string>
+    <string name="acc_plan">套餐</string>
+    <string name="plan_free">免费</string>
+    <string name="plan_monthly">Premium 月度</string>
+    <string name="plan_lifetime">Premium 终身</string>
+    <string name="acc_expires_fmt">到期：%1$s</string>
+    <string name="acc_verified">邮箱已验证</string>
+    <string name="acc_not_verified">邮箱未验证</string>
+    <string name="acc_send_verify">发送验证邮件</string>
+    <string name="acc_refresh">刷新套餐</string>
+    <string name="acc_signed_out_hint">登录以同步您的套餐</string>
+    <string name="acc_open_profile">个人资料</string>
+    <string name="acc_loading">加载中…</string>
+    <string name="acc_switch_to_register">没有账户？注册</string>
+    <string name="acc_switch_to_login">已有账户？登录</string>
 </resources>

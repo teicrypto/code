@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">SysWidget</string>
+    <string name="app_name" translatable="false">SysPulse</string>
 
     <!-- AdMob -->
-    <string name="admob_app_id" translatable="false">ca-app-pub-9060691287440103~9181293270</string>
     <!-- Banner THU NGHIEM cua Google. Khi phat hanh doi lai: ca-app-pub-9060691287440103/8578658047 -->
-    <string name="admob_banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <!-- Interstitial THU NGHIEM cua Google. Khi phat hanh thay bang ad unit Interstitial that. -->
-    <string name="admob_interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 
     <!-- Default language: English -->
     <string name="widget_desc">CPU, GPU, RAM, storage, battery, network</string>
 
-    <string name="main_howto">1) Tap \"Start updates\".\n2) Long-press the home screen → Widgets → SysWidget.</string>
+    <string name="main_howto">1) Tap \"Start updates\".\n2) Long-press the home screen → Widgets → SysPulse.</string>
     <string name="btn_start_updates">Start updates</string>
     <string name="btn_stop">Stop</string>
     <string name="btn_start_popup">Start floating popup</string>
@@ -36,10 +33,6 @@
     <string name="temp_batt_fmt">Battery %1$.0f°C</string>
     <string name="uptime_fmt">Up %1$dh%2$02dm</string>
 
-    <string name="ad_loaded">AdMob: ad loaded</string>
-    <string name="ad_error_fmt">AdMob error %1$d: %2$s</string>
-    <string name="ad_inter_error_fmt">AdMob interstitial error %1$d: %2$s</string>
-
     <string name="overlay_no_permission">Permission to display over other apps not granted</string>
     <string name="overlay_refresh">Refresh</string>
     <string name="overlay_close">Close popup</string>
@@ -55,13 +48,13 @@
 
     <string name="notif_channel">System stats</string>
     <string name="notif_channel_bar">Status bar stats</string>
-    <string name="notif_widget_title">SysWidget is updating the widget</string>
-    <string name="notif_overlay_title">SysWidget popup is on</string>
+    <string name="notif_widget_title">SysPulse is updating the widget</string>
+    <string name="notif_overlay_title">SysPulse popup is on</string>
 
     <string name="cpu_apps_title">Top apps by CPU</string>
     <string name="cpu_apps_error">Could not read CPU data</string>
     <string name="ram_apps_title">Top apps by RAM</string>
-    <string name="apps_need_adb">Per-app CPU/RAM needs built-in ADB. Open the SysWidget app to pair.</string>
+    <string name="apps_need_adb">Per-app CPU/RAM needs built-in ADB. Open the SysPulse app to pair.</string>
     <string name="adb_section">Per-app usage (built-in ADB)</string>
     <string name="adb_ready">Shizuku: connected</string>
     <string name="adb_disconnected">Shizuku: not connected. Open the connection screen.</string>
@@ -120,8 +113,8 @@
     <string name="metric_temp">Temperature</string>
     <string name="a11y_desc">Only used during setup to read the pairing code in Settings and pair automatically. Nothing is collected or sent.</string>
     <string name="step3_btn_auto">Auto pair</string>
-    <string name="step3_need_a11y">Turn on SysWidget in Accessibility, then come back and tap Auto pair</string>
-    <string name="step3_desc_auto">Tap Auto pair. The app opens Wireless debugging and pairs by itself. First time it asks you to enable SysWidget in Accessibility.</string>
+    <string name="step3_need_a11y">Turn on SysPulse in Accessibility, then come back and tap Auto pair</string>
+    <string name="step3_desc_auto">Tap Auto pair. The app opens Wireless debugging and pairs by itself. First time it asks you to enable SysPulse in Accessibility.</string>
     <string name="pop_title">Task Manager</string>
     <string name="tab_perf">Performance</string>
     <string name="tab_proc">Processes</string>
@@ -140,7 +133,7 @@
     <string name="btn_pair">Pair</string>
     <string name="conn_searching">Working…</string>
     <string name="conn_port_found_fmt">Port found: %1$d. Now type the 6-digit code.</string>
-    <string name="onb_intro">Allow SysWidget to show a floating Task Manager over other apps. Everything (stats, charts, per-app usage, connection) is inside the popup.</string>
+    <string name="onb_intro">Allow SysPulse to show a floating Task Manager over other apps. Everything (stats, charts, per-app usage, connection) is inside the popup.</string>
     <string name="onb_overlay_ok">✓ Display over other apps: allowed</string>
     <string name="onb_overlay_need">Display over other apps: not allowed yet</string>
     <string name="onb_overlay_btn">Allow display over other apps</string>
@@ -164,7 +157,7 @@
     <string name="adb_copied">Copied</string>
     <string name="adb_guide_body">1. Connect to Wi-Fi.\n2. Turn on Developer options (tap Build number 7 times in About phone).\n3. Tap Pairing here. Allow notifications if asked.\n4. In Wireless debugging, turn it on, then tap \"Pair device with pairing code\" and keep the dialog open.\n5. Pull down the notification shade, tap \"Enter pairing code\" and type the 6 digits.\n6. When it says connected, you are done. Tap Start if it does not connect by itself.</string>
     <string name="pairing_title">Pairing</string>
-    <string name="pairing_need_notif">The pairing process needs you to interact with a notification from SysWidget. Please allow SysWidget to post notifications.</string>
+    <string name="pairing_need_notif">The pairing process needs you to interact with a notification from SysPulse. Please allow SysPulse to post notifications.</string>
     <string name="pairing_notif_options">Notification options</string>
     <string name="pairing_help">Wireless debugging is opening. Turn it on, tap \"Pair device with pairing code\" and keep that dialog open. Then pull down the notification shade and tap \"Enter pairing code\".</string>
     <string name="btn_open_adb">Shizuku connection</string>
@@ -178,7 +171,7 @@
     <string name="shz_status_perm">Permission needed</string>
     <string name="shz_status_ready">Connected via Shizuku (%1$s)</string>
     <string name="shz_card_title">Shizuku</string>
-    <string name="shz_card_desc">SysWidget uses Shizuku to read per-app CPU/RAM, GPU and FPS. Install and start Shizuku, then grant SysWidget permission.</string>
+    <string name="shz_card_desc">SysPulse uses Shizuku to read per-app CPU/RAM, GPU and FPS. Install and start Shizuku, then grant SysPulse permission.</string>
     <string name="shz_btn_open">Open Shizuku</string>
     <string name="shz_btn_download">Get Shizuku</string>
     <string name="shz_btn_grant">Grant permission</string>
@@ -206,4 +199,41 @@
     <string name="m_storage">Storage usage</string>
     <string name="m_clock">Clock</string>
     <string name="m_uptime">Uptime</string>
+    <string name="acc_title">Account</string>
+    <string name="acc_signin">Sign in</string>
+    <string name="acc_register">Register</string>
+    <string name="acc_signout">Sign out</string>
+    <string name="acc_email">Email</string>
+    <string name="acc_password">Password</string>
+    <string name="acc_confirm">Confirm password</string>
+    <string name="acc_google">Continue with Google</string>
+    <string name="acc_forgot">Forgot password?</string>
+    <string name="acc_reset_sent">Password reset email sent</string>
+    <string name="acc_enter_email">Enter your email first</string>
+    <string name="acc_err_empty">Enter email and password</string>
+    <string name="acc_err_mismatch">Passwords do not match</string>
+    <string name="acc_err_weak">Password must be at least 6 characters</string>
+    <string name="acc_err_invalid">Wrong email or password</string>
+    <string name="acc_err_exists">This email is already registered</string>
+    <string name="acc_err_email">Invalid email</string>
+    <string name="acc_err_network">Network error, check your connection</string>
+    <string name="acc_err_google_cfg">Google Sign-In is not configured yet: add the SHA-1 in Firebase and re-download google-services.json</string>
+    <string name="acc_err_generic_fmt">Error: %1$s</string>
+    <string name="acc_verify_sent">Verification email sent</string>
+    <string name="acc_logged_out">Signed out</string>
+    <string name="acc_uid">User ID (UID)</string>
+    <string name="acc_plan">Plan</string>
+    <string name="plan_free">Free</string>
+    <string name="plan_monthly">Premium Monthly</string>
+    <string name="plan_lifetime">Premium Lifetime</string>
+    <string name="acc_expires_fmt">Expires: %1$s</string>
+    <string name="acc_verified">Email verified</string>
+    <string name="acc_not_verified">Email not verified</string>
+    <string name="acc_send_verify">Send verification email</string>
+    <string name="acc_refresh">Refresh plan</string>
+    <string name="acc_signed_out_hint">Sign in to sync your plan</string>
+    <string name="acc_open_profile">Profile</string>
+    <string name="acc_loading">Loading…</string>
+    <string name="acc_switch_to_register">No account? Register</string>
+    <string name="acc_switch_to_login">Have an account? Sign in</string>
 </resources>
