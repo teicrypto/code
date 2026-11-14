@@ -53,8 +53,8 @@
     <string name="ram_apps_title">App ăn RAM nhiều nhất</string>
     <string name="apps_need_adb">Xem CPU/RAM từng app cần ADB tích hợp. Mở app SysWidget để ghép nối.</string>
     <string name="adb_section">Mức dùng từng app (ADB tích hợp)</string>
-    <string name="adb_ready">ADB: đã kết nối</string>
-    <string name="adb_disconnected">ADB: chưa kết nối. Bật Wi-Fi và Gỡ lỗi không dây rồi bấm Kết nối. Lần đầu: bấm Ghép nối.</string>
+    <string name="adb_ready">Shizuku: đã kết nối</string>
+    <string name="adb_disconnected">Shizuku: chưa kết nối. Mở màn hình kết nối.</string>
     <string name="btn_adb_pair">Ghép nối (qua thông báo)</string>
     <string name="btn_adb_connect">Kết nối</string>
     <string name="adb_manual_hint">Ghép nối thủ công (dùng chế độ chia đôi màn hình với hộp thoại ghép nối):</string>
@@ -74,7 +74,7 @@
     <string name="pair_fail_fmt">Ghép nối thất bại: %1$s</string>
     <string name="connect_ok">Đã kết nối</string>
     <string name="connect_fail">Không kết nối được. Wi-Fi và Gỡ lỗi không dây đã bật chưa?</string>
-    <string name="adb_paired_disconnected">ADB: đã ghép nối (đã lưu), chưa kết nối. Bật Wi-Fi và Gỡ lỗi không dây rồi bấm Kết nối.</string>
+    <string name="adb_paired_disconnected">Shizuku: chưa kết nối. Mở màn hình kết nối.</string>
     <string name="setup_title">Thiết lập xem từng app</string>
     <string name="setup_intro">Làm theo 4 bước, chỉ một lần (khoảng 1 phút). Bước nào xong sẽ tự hiện dấu ✓.</string>
     <string name="step1_title">1. Bật Tùy chọn nhà phát triển</string>
@@ -138,7 +138,7 @@
     <string name="onb_stop_popup">Đóng popup</string>
     <string name="onb_tip">Chạm vào bong bóng nhỏ để mở rộng. Trong popup, tab Kết nối giúp xem CPU/RAM từng app.</string>
     <string name="tab_hw">Phần cứng</string>
-    <string name="adb_title">Kết nối ADB</string>
+    <string name="adb_title">Kết nối Shizuku</string>
     <string name="adb_status_on">ADB đã kết nối</string>
     <string name="adb_status_off">ADB chưa kết nối</string>
     <string name="adb_card_wifi_title">Bắt đầu qua Gỡ lỗi không dây</string>
@@ -157,10 +157,20 @@
     <string name="pairing_need_notif">Quá trình ghép nối cần bạn thao tác với một thông báo của SysWidget. Hãy cho phép SysWidget gửi thông báo.</string>
     <string name="pairing_notif_options">Tùy chọn thông báo</string>
     <string name="pairing_help">Đang mở Gỡ lỗi không dây. Hãy bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở. Sau đó vuốt thanh thông báo xuống và bấm \"Nhập mã ghép nối\".</string>
-    <string name="btn_open_adb">Thiết lập kết nối ADB</string>
-    <string name="conn_tab_desc">Xem CPU/RAM từng app cần kết nối ADB tích hợp. Mở màn hình thiết lập để kết nối.</string>
+    <string name="btn_open_adb">Kết nối Shizuku</string>
+    <string name="conn_tab_desc">Xem CPU/RAM từng app cần Shizuku. Mở màn hình kết nối để kiểm tra và cấp quyền.</string>
     <string name="pair_open_dialog">Mở hộp nhập</string>
     <string name="pair_ok_noconn_fmt">Đã ghép nối nhưng chưa kết nối được: %1$s. Hãy giữ Wi-Fi và Gỡ lỗi không dây luôn bật, rồi mở Kết nối ADB và bấm Bắt đầu.</string>
     <string name="adb_btn_log">Nhật ký kết nối</string>
     <string name="adb_log_empty">(trống)</string>
+    <string name="shz_status_none">Chưa cài Shizuku</string>
+    <string name="shz_status_stopped">Shizuku chưa chạy</string>
+    <string name="shz_status_perm">Cần cấp quyền</string>
+    <string name="shz_status_ready">Đã kết nối qua Shizuku (%1$s)</string>
+    <string name="shz_card_title">Shizuku</string>
+    <string name="shz_card_desc">SysWidget dùng Shizuku để đọc CPU/RAM từng app, GPU và FPS. Hãy cài và khởi động Shizuku, rồi cấp quyền cho SysWidget.</string>
+    <string name="shz_btn_open">Mở Shizuku</string>
+    <string name="shz_btn_download">Tải Shizuku</string>
+    <string name="shz_btn_grant">Cấp quyền</string>
+    <string name="shz_guide_body">1. Cài Shizuku (bấm Tải Shizuku).\n2. Mở Shizuku, chọn \"Bắt đầu qua Gỡ lỗi không dây\": bật Tùy chọn nhà phát triển và Gỡ lỗi không dây, bấm Ghép nối, nhập mã ở thông báo, rồi bấm Bắt đầu. (Hoặc khởi động từ máy tính.)\n3. Quay lại đây và bấm Cấp quyền.\n4. Trạng thái chuyển xanh. Mở tab Tiến trình trong popup.</string>
 </resources>

@@ -39,7 +39,12 @@ object PrivShell {
     @Synchronized
     fun logText(): String = logBuf.toString()
 
-    fun state(): State = if (connected) State.READY else State.DISCONNECTED
+    fun lastErrorSet(m: String) {
+        lastError = m
+        log(m)
+    }
+
+    fun state(): State = if (connected || ShizukuBridge.granted()) State.READY else State.DISCONNECTED
 
     fun isPaired(ctx: Context): Boolean = Prefs.sp(ctx).getBoolean(KEY_PAIRED, false)
 
@@ -85,6 +90,7 @@ object PrivShell {
      */
     @Synchronized
     fun connect(ctx: Context, force: Boolean = false): Boolean {
+        if (ShizukuBridge.granted()) return true // ưu tiên Shizuku
         if (connected) return true
         val now = SystemClock.elapsedRealtime()
         if (!force && now - lastAttempt < 20_000) return false
@@ -138,6 +144,7 @@ object PrivShell {
 
     /** Chạy một lệnh shell, trả về toàn bộ output. Blocking. */
     private fun exec(ctx: Context, cmd: String): String? {
+        if (ShizukuBridge.granted()) return ShizukuBridge.exec(cmd)
         for (attempt in 0..1) {
             if (!(if (attempt == 0) connect(ctx) else connect(ctx, force = true))) continue
             try {

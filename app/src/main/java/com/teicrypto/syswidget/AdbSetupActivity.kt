@@ -2,26 +2,26 @@ package com.teicrypto.syswidget
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 
-/** Màn hình thiết lập ADB tích hợp, bố cục giống Shizuku: trạng thái, Gỡ lỗi không dây, máy tính. */
+/** Màn hình kết nối qua Shizuku: trạng thái, mở/cài Shizuku, cấp quyền. */
 class AdbSetupActivity : Activity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var status: TextView
     private lateinit var statusCard: LinearLayout
-    private var busy = false
+    private lateinit var openBtn: TextView
+    private lateinit var grantBtn: TextView
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(LocaleHelper.wrap(base))
@@ -34,9 +34,7 @@ class AdbSetupActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(d(16), d(40), d(16), d(24))
         }
-
-        // Thanh tiêu đề
-        val bar = LinearLayout(this).apply { gravity = android.view.Gravity.CENTER_VERTICAL }
+        val bar = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         bar.addView(TextView(this).apply {
             text = "←"
             textSize = 26f
@@ -51,39 +49,28 @@ class AdbSetupActivity : Activity() {
         })
         root.addView(bar)
 
-        // Thẻ trạng thái
         statusCard = UiKit.card(this)
-        val sRow = LinearLayout(this).apply { gravity = android.view.Gravity.CENTER_VERTICAL }
+        val sRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         sRow.addView(UiKit.icon(this, "!"))
         status = UiKit.title(this, "").apply { setPadding(d(24), 0, 0, 0) }
-        sRow.addView(status)
+        sRow.addView(status, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
         statusCard.addView(sRow)
         root.addView(statusCard)
 
-        // Thẻ: Gỡ lỗi không dây
-        val wifi = UiKit.card(this)
-        val wRow = LinearLayout(this).apply { gravity = android.view.Gravity.CENTER_VERTICAL }
-        wRow.addView(UiKit.icon(this, "◈"))
-        wRow.addView(UiKit.title(this, getString(R.string.adb_card_wifi_title)).apply { setPadding(d(24), 0, 0, 0) })
-        wifi.addView(wRow)
-        wifi.addView(UiKit.body(this, getString(R.string.adb_card_wifi_desc)).apply { setPadding(0, d(24), 0, d(8)) })
-        wifi.addView(UiKit.pill(this, getString(R.string.adb_btn_guide), "↗") { showGuide() })
-        wifi.addView(UiKit.pill(this, getString(R.string.adb_btn_pairing), "∞") {
-            startActivity(Intent(this, PairingActivity::class.java))
-        })
-        wifi.addView(UiKit.pill(this, getString(R.string.adb_btn_start), "▶") { doStart() })
-        root.addView(wifi)
-
-        // Thẻ: qua máy tính
-        val pc = UiKit.card(this)
-        val pRow = LinearLayout(this).apply { gravity = android.view.Gravity.CENTER_VERTICAL }
-        pRow.addView(UiKit.icon(this, "⌁"))
-        pRow.addView(UiKit.title(this, getString(R.string.adb_card_pc_title)).apply { setPadding(d(24), 0, 0, 0) })
-        pc.addView(pRow)
-        pc.addView(UiKit.body(this, getString(R.string.adb_card_pc_desc)).apply { setPadding(0, d(24), 0, d(8)) })
-        pc.addView(UiKit.pill(this, getString(R.string.adb_btn_cmd), "‹›") { showCommand() })
-        pc.addView(UiKit.pill(this, getString(R.string.adb_btn_log), "☰") { showLog() })
-        root.addView(pc)
+        val card = UiKit.card(this)
+        val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        row.addView(UiKit.icon(this, "◈"))
+        row.addView(UiKit.title(this, getString(R.string.shz_card_title)).apply { setPadding(d(24), 0, 0, 0) })
+        card.addView(row)
+        card.addView(UiKit.body(this, getString(R.string.shz_card_desc)).apply { setPadding(0, d(24), 0, d(8)) })
+        openBtn = UiKit.pill(this, "", "↗") { openShizuku() }
+        grantBtn = UiKit.pill(this, getString(R.string.shz_btn_grant), "✓") {
+            ShizukuBridge.requestPermission()
+        }
+        card.addView(openBtn)
+        card.addView(grantBtn)
+        card.addView(UiKit.pill(this, getString(R.string.adb_btn_guide), "☰") { showGuide() })
+        root.addView(card)
 
         setContentView(ScrollView(this).apply {
             setBackgroundColor(Color.parseColor(UiKit.BG))
@@ -92,80 +79,41 @@ class AdbSetupActivity : Activity() {
         })
     }
 
+    private fun openShizuku() {
+        val launch = packageManager.getLaunchIntentForPackage(ShizukuBridge.PKG)
+        try {
+            if (launch != null) startActivity(launch)
+            else startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
+        } catch (e: Exception) { }
+    }
+
     private fun showGuide() {
         AlertDialog.Builder(this)
             .setTitle(R.string.adb_btn_guide)
-            .setMessage(R.string.adb_guide_body)
+            .setMessage(R.string.shz_guide_body)
             .setPositiveButton(android.R.string.ok, null)
             .show()
     }
 
-    private fun showLog() {
-        val text = PrivShell.logText().ifEmpty { getString(R.string.adb_log_empty) } +
-            (PrivShell.lastError?.let { "\nlastError: $it" } ?: "")
-        AlertDialog.Builder(this)
-            .setTitle(R.string.adb_btn_log)
-            .setMessage(text)
-            .setPositiveButton(R.string.adb_copy) { _, _ ->
-                (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
-                    .setPrimaryClip(ClipData.newPlainText("log", text))
-                Toast.makeText(this, R.string.adb_copied, Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton(android.R.string.ok, null)
-            .show()
-    }
-
-    private fun showCommand() {
-        val cmd = "adb tcpip 5555"
-        AlertDialog.Builder(this)
-            .setTitle(R.string.adb_btn_cmd)
-            .setMessage(getString(R.string.adb_cmd_body, cmd))
-            .setPositiveButton(R.string.adb_copy) { _, _ ->
-                (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
-                    .setPrimaryClip(ClipData.newPlainText("adb", cmd))
-                Toast.makeText(this, R.string.adb_copied, Toast.LENGTH_SHORT).show()
-            }
-            .setNegativeButton(android.R.string.ok, null)
-            .show()
-    }
-
-    private fun doStart() {
-        if (busy) return
-        busy = true
-        Toast.makeText(this, R.string.conn_searching, Toast.LENGTH_SHORT).show()
-        Thread {
-            val ok = PrivShell.connect(applicationContext, force = true)
-            runOnUiThread {
-                busy = false
-                Toast.makeText(
-                    this,
-                    if (ok) getString(R.string.connect_ok)
-                    else getString(R.string.connect_fail) + "\n" + (PrivShell.lastError ?: ""),
-                    Toast.LENGTH_LONG
-                ).show()
-                refresh()
-            }
-        }.start()
-    }
-
     private fun refresh() {
-        val on = PrivShell.state() == PrivShell.State.READY
-        status.text = getString(if (on) R.string.adb_status_on else R.string.adb_status_off)
-        statusCard.background = UiKit.round(this, if (on) "#12301F" else UiKit.CARD, 24)
+        val installed = ShizukuBridge.installed(this)
+        val running = ShizukuBridge.running()
+        val granted = ShizukuBridge.granted()
+        status.text = when {
+            granted -> getString(R.string.shz_status_ready, if (ShizukuBridge.uid() == 0) "root" else "shell")
+            running -> getString(R.string.shz_status_perm)
+            installed -> getString(R.string.shz_status_stopped)
+            else -> getString(R.string.shz_status_none)
+        }
+        statusCard.background = UiKit.round(this, if (granted) "#12301F" else UiKit.CARD, 24)
+        openBtn.text = "↗   " + getString(if (installed) R.string.shz_btn_open else R.string.shz_btn_download)
+        grantBtn.visibility = if (running && !granted) android.view.View.VISIBLE else android.view.View.GONE
     }
 
     private val tick = object : Runnable {
         override fun run() {
             refresh()
-            // Đã ghép nối mà chưa nối: tự thử nối nền
-            if (PrivShell.isPaired(this@AdbSetupActivity) && PrivShell.state() != PrivShell.State.READY && !busy) {
-                busy = true
-                Thread {
-                    PrivShell.connect(applicationContext)
-                    runOnUiThread { busy = false }
-                }.start()
-            }
-            handler.postDelayed(this, 1500)
+            handler.postDelayed(this, 1000)
         }
     }
 

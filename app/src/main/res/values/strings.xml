@@ -63,8 +63,8 @@
     <string name="ram_apps_title">Top apps by RAM</string>
     <string name="apps_need_adb">Per-app CPU/RAM needs built-in ADB. Open the SysWidget app to pair.</string>
     <string name="adb_section">Per-app usage (built-in ADB)</string>
-    <string name="adb_ready">ADB: connected</string>
-    <string name="adb_disconnected">ADB: not connected. Turn on Wi-Fi and Wireless debugging, then tap Connect. First time: tap Pair.</string>
+    <string name="adb_ready">Shizuku: connected</string>
+    <string name="adb_disconnected">Shizuku: not connected. Open the connection screen.</string>
     <string name="btn_adb_pair">Pair (via notification)</string>
     <string name="btn_adb_connect">Connect</string>
     <string name="adb_manual_hint">Manual pairing (use split screen with the pairing dialog):</string>
@@ -84,7 +84,7 @@
     <string name="pair_fail_fmt">Pairing failed: %1$s</string>
     <string name="connect_ok">Connected</string>
     <string name="connect_fail">Could not connect. Is Wi-Fi and Wireless debugging on?</string>
-    <string name="adb_paired_disconnected">ADB: paired (saved), not connected. Turn on Wi-Fi and Wireless debugging, then tap Connect.</string>
+    <string name="adb_paired_disconnected">Shizuku: not connected. Open the connection screen.</string>
     <string name="setup_title">Set up per-app usage</string>
     <string name="setup_intro">Follow these 4 steps once (about 1 minute). Steps get a check mark automatically.</string>
     <string name="step1_title">1. Turn on Developer options</string>
@@ -148,7 +148,7 @@
     <string name="onb_stop_popup">Close popup</string>
     <string name="onb_tip">Tap the small bubble to expand it. In the popup, the Connect tab sets up per-app CPU/RAM.</string>
     <string name="tab_hw">Hardware</string>
-    <string name="adb_title">ADB connection</string>
+    <string name="adb_title">Shizuku connection</string>
     <string name="adb_status_on">ADB is connected</string>
     <string name="adb_status_off">ADB is not connected</string>
     <string name="adb_card_wifi_title">Start via Wireless debugging</string>
@@ -167,10 +167,20 @@
     <string name="pairing_need_notif">The pairing process needs you to interact with a notification from SysWidget. Please allow SysWidget to post notifications.</string>
     <string name="pairing_notif_options">Notification options</string>
     <string name="pairing_help">Wireless debugging is opening. Turn it on, tap \"Pair device with pairing code\" and keep that dialog open. Then pull down the notification shade and tap \"Enter pairing code\".</string>
-    <string name="btn_open_adb">ADB connection setup</string>
-    <string name="conn_tab_desc">Per-app CPU/RAM needs the built-in ADB connection. Open the setup screen to connect.</string>
+    <string name="btn_open_adb">Shizuku connection</string>
+    <string name="conn_tab_desc">Per-app CPU/RAM needs Shizuku. Open the connection screen to check and grant permission.</string>
     <string name="pair_open_dialog">Open input box</string>
     <string name="pair_ok_noconn_fmt">Paired, but could not connect: %1$s. Keep Wi-Fi and Wireless debugging on, then open ADB connection and tap Start.</string>
     <string name="adb_btn_log">Connection log</string>
     <string name="adb_log_empty">(empty)</string>
+    <string name="shz_status_none">Shizuku is not installed</string>
+    <string name="shz_status_stopped">Shizuku is not running</string>
+    <string name="shz_status_perm">Permission needed</string>
+    <string name="shz_status_ready">Connected via Shizuku (%1$s)</string>
+    <string name="shz_card_title">Shizuku</string>
+    <string name="shz_card_desc">SysWidget uses Shizuku to read per-app CPU/RAM, GPU and FPS. Install and start Shizuku, then grant SysWidget permission.</string>
+    <string name="shz_btn_open">Open Shizuku</string>
+    <string name="shz_btn_download">Get Shizuku</string>
+    <string name="shz_btn_grant">Grant permission</string>
+    <string name="shz_guide_body">1. Install Shizuku (tap Get Shizuku).\n2. Open Shizuku and choose \"Start via Wireless debugging\": enable Developer options and Wireless debugging, tap Pairing, enter the code from the notification, then tap Start. (Or start it from a computer.)\n3. Come back here and tap Grant permission.\n4. Status turns green. Open the Processes tab in the popup.</string>
 </resources>

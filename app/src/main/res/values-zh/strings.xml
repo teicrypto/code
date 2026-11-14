@@ -53,8 +53,8 @@
     <string name="ram_apps_title">内存占用最高的应用</string>
     <string name="apps_need_adb">查看各应用 CPU/内存需要内置 ADB，请打开 SysWidget 应用进行配对。</string>
     <string name="adb_section">各应用占用（内置 ADB）</string>
-    <string name="adb_ready">ADB：已连接</string>
-    <string name="adb_disconnected">ADB：未连接。请开启 Wi-Fi 和无线调试后点击“连接”。首次使用请点击“配对”。</string>
+    <string name="adb_ready">Shizuku：已连接</string>
+    <string name="adb_disconnected">Shizuku：未连接。请打开连接界面。</string>
     <string name="btn_adb_pair">配对（通过通知）</string>
     <string name="btn_adb_connect">连接</string>
     <string name="adb_manual_hint">手动配对（与配对对话框分屏使用）：</string>
@@ -74,7 +74,7 @@
     <string name="pair_fail_fmt">配对失败：%1$s</string>
     <string name="connect_ok">已连接</string>
     <string name="connect_fail">无法连接。请确认 Wi-Fi 和无线调试已开启。</string>
-    <string name="adb_paired_disconnected">ADB：已配对（已保存），未连接。请开启 Wi-Fi 和无线调试后点击“连接”。</string>
+    <string name="adb_paired_disconnected">Shizuku：未连接。请打开连接界面。</string>
     <string name="setup_title">设置各应用占用查看</string>
     <string name="setup_intro">按以下 4 步操作一次即可（约 1 分钟）。完成的步骤会自动打 ✓。</string>
     <string name="step1_title">1. 开启开发者选项</string>
@@ -138,7 +138,7 @@
     <string name="onb_stop_popup">关闭悬浮窗</string>
     <string name="onb_tip">点击小气泡展开。在悬浮窗的“连接”标签中设置各应用 CPU/内存查看。</string>
     <string name="tab_hw">硬件</string>
-    <string name="adb_title">ADB 连接</string>
+    <string name="adb_title">Shizuku 连接</string>
     <string name="adb_status_on">ADB 已连接</string>
     <string name="adb_status_off">ADB 未连接</string>
     <string name="adb_card_wifi_title">通过无线调试启动</string>
@@ -157,10 +157,20 @@
     <string name="pairing_need_notif">配对过程需要您操作 SysWidget 的通知。请允许 SysWidget 发送通知。</string>
     <string name="pairing_notif_options">通知选项</string>
     <string name="pairing_help">正在打开无线调试。请开启它，点击“使用配对码配对设备”并保持该对话框打开，然后下拉通知栏并点击“输入配对码”。</string>
-    <string name="btn_open_adb">ADB 连接设置</string>
-    <string name="conn_tab_desc">查看各应用 CPU/内存需要内置 ADB 连接。请打开设置界面进行连接。</string>
+    <string name="btn_open_adb">Shizuku 连接</string>
+    <string name="conn_tab_desc">查看各应用 CPU/内存需要 Shizuku。请打开连接界面检查并授权。</string>
     <string name="pair_open_dialog">打开输入框</string>
     <string name="pair_ok_noconn_fmt">已配对，但无法连接：%1$s。请保持 Wi-Fi 和无线调试开启，然后打开 ADB 连接并点击“启动”。</string>
     <string name="adb_btn_log">连接日志</string>
     <string name="adb_log_empty">（空）</string>
+    <string name="shz_status_none">未安装 Shizuku</string>
+    <string name="shz_status_stopped">Shizuku 未运行</string>
+    <string name="shz_status_perm">需要授权</string>
+    <string name="shz_status_ready">已通过 Shizuku 连接（%1$s）</string>
+    <string name="shz_card_title">Shizuku</string>
+    <string name="shz_card_desc">SysWidget 使用 Shizuku 读取各应用 CPU/内存、GPU 和 FPS。请安装并启动 Shizuku，然后授权 SysWidget。</string>
+    <string name="shz_btn_open">打开 Shizuku</string>
+    <string name="shz_btn_download">获取 Shizuku</string>
+    <string name="shz_btn_grant">授权</string>
+    <string name="shz_guide_body">1. 安装 Shizuku（点击“获取 Shizuku”）。\n2. 打开 Shizuku，选择“通过无线调试启动”：开启开发者选项和无线调试，点击配对，在通知中输入配对码，然后点击启动。（也可通过电脑启动。）\n3. 返回此处点击“授权”。\n4. 状态变绿后，在悬浮窗中打开“进程”标签。</string>
 </resources>
