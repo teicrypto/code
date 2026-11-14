@@ -64,7 +64,7 @@
     <string name="pair_need_port_code">请输入配对端口和 6 位配对码</string>
     <string name="pair_notif_channel">ADB 配对</string>
     <string name="pair_notif_wait_title">等待配对</string>
-    <string name="pair_notif_wait_text">打开 开发者选项 → 无线调试 → 使用配对码配对设备，并保持该对话框打开。</string>
+    <string name="pair_notif_wait_text">打开 开发者选项 → 无线调试 → 使用配对码配对设备，保持该对话框打开，然后点击“输入配对码”并在此输入 6 位数字。</string>
     <string name="pair_notif_ready_title">ADB 配对</string>
     <string name="pair_notif_enter">已找到配对端口，请输入配对对话框中的 6 位配对码。</string>
     <string name="pair_notif_action">输入配对码</string>
@@ -124,7 +124,7 @@
     <string name="conn_pc_title">方法 A：通过电脑（一次）</string>
     <string name="conn_pc_desc">用 USB 连接电脑（已开启 USB 调试），运行：adb tcpip 5555 。然后点击连接，并在手机上选择“始终允许”。重启后失效。</string>
     <string name="conn_wifi_title">方法 B：无线配对</string>
-    <string name="conn_wifi_desc">1) 点击开始配对（打开无线调试）。2) 点击“使用配对码配对设备”。3) 在此输入 6 位数字，将自动配对。</string>
+    <string name="conn_wifi_desc">1) 点击开始配对（打开无线调试）。2) 点击“使用配对码配对设备”并保持该对话框打开。3) 下拉通知栏，点击“输入配对码”并输入 6 位数字（Android 会在配对界面隐藏悬浮窗）。下方输入框用于手动输入。</string>
     <string name="conn_start_pair">开始配对</string>
     <string name="conn_notif_alt">通过通知配对</string>
     <string name="btn_pair">配对</string>
@@ -137,4 +137,5 @@
     <string name="onb_open_popup">打开任务管理器悬浮窗</string>
     <string name="onb_stop_popup">关闭悬浮窗</string>
     <string name="onb_tip">点击小气泡展开。在悬浮窗的“连接”标签中设置各应用 CPU/内存查看。</string>
+    <string name="tab_hw">硬件</string>
 </resources>

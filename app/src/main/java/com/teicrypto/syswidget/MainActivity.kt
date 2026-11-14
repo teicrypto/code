@@ -81,6 +81,25 @@ class MainActivity : Activity() {
             setPadding(0, pad / 2, 0, pad)
         })
 
+        // Chọn ngôn ngữ ngay ở màn hình đầu
+        root.addView(TextView(this).apply {
+            text = getString(R.string.settings_language)
+            textSize = 13f
+            setTextColor(Color.LTGRAY)
+        })
+        val langRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        for ((code, label) in listOf("vi" to "Tiếng Việt", "en" to "English", "zh" to "中文")) {
+            langRow.addView(Button(this).apply {
+                text = label
+                isEnabled = Prefs.lang(this@MainActivity) != code
+                setOnClickListener {
+                    Prefs.sp(this@MainActivity).edit().putString(Prefs.LANG, code).apply()
+                    recreate()
+                }
+            })
+        }
+        root.addView(langRow)
+
         permStatus = TextView(this).apply {
             textSize = 15f
             setTypeface(null, Typeface.BOLD)

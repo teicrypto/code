@@ -38,7 +38,7 @@ class PairingService : Service() {
         nm.createNotificationChannel(
             NotificationChannel(CHANNEL, str(R.string.pair_notif_channel), NotificationManager.IMPORTANCE_HIGH)
         )
-        val n = build(str(R.string.pair_notif_wait_title), str(R.string.pair_notif_wait_text), false)
+        val n = build(str(R.string.pair_notif_wait_title), str(R.string.pair_notif_wait_text), true)
         if (Build.VERSION.SDK_INT >= 34) {
             startForeground(NOTIF_ID, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
         } else {
@@ -85,10 +85,14 @@ class PairingService : Service() {
     }
 
     private fun doPair(code: String) {
-        val p = port
+        // Có thể gõ mã trước khi tìm thấy cổng: chờ tối đa vài giây
+        var p = port
         // Cập nhật ngay để ô nhập không quay mãi
         nm.notify(NOTIF_ID, build(str(R.string.pair_notif_ready_title), "…", false))
         Thread {
+            var waited = 0
+            while (port <= 0 && waited < 15_000 && !cancel.get()) { Thread.sleep(500); waited += 500 }
+            p = port
             val paired = p > 0 && PrivShell.pair(this, p, code)
             val ok = paired && PrivShell.connect(this, force = true)
             val msg = when {
@@ -97,7 +101,7 @@ class PairingService : Service() {
                 else -> str(R.string.pair_fail_fmt, PrivShell.lastError ?: "?")
             }
             handler.post {
-                nm.notify(NOTIF_ID, build(str(R.string.pair_notif_ready_title), msg, !ok && p > 0))
+                nm.notify(NOTIF_ID, build(str(R.string.pair_notif_ready_title), msg, !ok))
                 if (ok) handler.postDelayed({ stopSelf() }, 2500)
             }
         }.start()

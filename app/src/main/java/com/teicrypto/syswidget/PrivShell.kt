@@ -88,6 +88,9 @@ object PrivShell {
         return tryConnect(ctx, port)
     }
 
+    /** Chạy lệnh shell từ bên ngoài. Blocking. */
+    fun run(ctx: Context, cmd: String): String? = exec(ctx, cmd)
+
     /** Chạy một lệnh shell, trả về toàn bộ output. Blocking. */
     private fun exec(ctx: Context, cmd: String): String? {
         for (attempt in 0..1) {

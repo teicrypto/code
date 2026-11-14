@@ -64,7 +64,7 @@
     <string name="pair_need_port_code">Hãy nhập cổng ghép nối và mã 6 số</string>
     <string name="pair_notif_channel">Ghép nối ADB</string>
     <string name="pair_notif_wait_title">Đang chờ ghép nối</string>
-    <string name="pair_notif_wait_text">Mở Tùy chọn nhà phát triển → Gỡ lỗi không dây → Ghép nối thiết bị bằng mã ghép nối. Giữ hộp thoại đó mở.</string>
+    <string name="pair_notif_wait_text">Mở Tùy chọn nhà phát triển → Gỡ lỗi không dây → Ghép nối thiết bị bằng mã ghép nối, giữ hộp thoại đó mở, rồi bấm \"Nhập mã\" và gõ 6 số ngay tại đây.</string>
     <string name="pair_notif_ready_title">Ghép nối ADB</string>
     <string name="pair_notif_enter">Đã tìm thấy cổng ghép nối. Nhập mã 6 số trong hộp thoại ghép nối.</string>
     <string name="pair_notif_action">Nhập mã</string>
@@ -124,7 +124,7 @@
     <string name="conn_pc_title">Cách A: qua máy tính (1 lần)</string>
     <string name="conn_pc_desc">Cắm máy vào PC (đã bật Gỡ lỗi USB) và chạy: adb tcpip 5555 . Sau đó bấm Kết nối và chọn \"Luôn cho phép\" trên điện thoại. Có hiệu lực tới khi khởi động lại máy.</string>
     <string name="conn_wifi_title">Cách B: ghép nối không dây</string>
-    <string name="conn_wifi_desc">1) Bấm Bắt đầu ghép nối (mở Gỡ lỗi không dây). 2) Bấm \"Ghép nối thiết bị bằng mã ghép nối\". 3) Gõ 6 số ngay tại đây, app tự ghép nối.</string>
+    <string name="conn_wifi_desc">1) Bấm Bắt đầu ghép nối (mở Gỡ lỗi không dây). 2) Bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở. 3) Vuốt thanh thông báo xuống, bấm \"Nhập mã\" và gõ 6 số (Android ẩn cửa sổ nổi trên màn hình ghép nối). Ô bên dưới dùng để nhập thủ công.</string>
     <string name="conn_start_pair">Bắt đầu ghép nối</string>
     <string name="conn_notif_alt">Ghép nối qua thông báo</string>
     <string name="btn_pair">Ghép nối</string>
@@ -137,4 +137,5 @@
     <string name="onb_open_popup">Mở popup Task Manager</string>
     <string name="onb_stop_popup">Đóng popup</string>
     <string name="onb_tip">Chạm vào bong bóng nhỏ để mở rộng. Trong popup, tab Kết nối giúp xem CPU/RAM từng app.</string>
+    <string name="tab_hw">Phần cứng</string>
 </resources>

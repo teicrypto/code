@@ -74,7 +74,7 @@
     <string name="pair_need_port_code">Enter the pairing port and the 6-digit code</string>
     <string name="pair_notif_channel">ADB pairing</string>
     <string name="pair_notif_wait_title">Waiting for pairing</string>
-    <string name="pair_notif_wait_text">Open Developer options → Wireless debugging → Pair device with pairing code. Keep that dialog open.</string>
+    <string name="pair_notif_wait_text">Open Developer options → Wireless debugging → Pair device with pairing code, keep that dialog open, then tap \"Enter code\" and type the 6 digits here.</string>
     <string name="pair_notif_ready_title">ADB pairing</string>
     <string name="pair_notif_enter">Pairing port found. Enter the 6-digit code from the pairing dialog.</string>
     <string name="pair_notif_action">Enter code</string>
@@ -134,7 +134,7 @@
     <string name="conn_pc_title">Method A: via computer (once)</string>
     <string name="conn_pc_desc">Plug the phone into a PC with USB debugging on and run: adb tcpip 5555 . Then tap Connect and choose \"Always allow\" on the phone. Lasts until reboot.</string>
     <string name="conn_wifi_title">Method B: wireless pairing</string>
-    <string name="conn_wifi_desc">1) Tap Start pairing (opens Wireless debugging). 2) Tap \"Pair device with pairing code\". 3) Type the 6 digits here, it pairs automatically.</string>
+    <string name="conn_wifi_desc">1) Tap Start pairing (opens Wireless debugging). 2) Tap \"Pair device with pairing code\" and keep that dialog open. 3) Pull down the notification shade, tap \"Enter code\" and type the 6 digits (Android hides floating windows over the pairing screen). Fields below are for manual entry.</string>
     <string name="conn_start_pair">Start pairing</string>
     <string name="conn_notif_alt">Pair via notification</string>
     <string name="btn_pair">Pair</string>
@@ -147,4 +147,5 @@
     <string name="onb_open_popup">Open Task Manager popup</string>
     <string name="onb_stop_popup">Close popup</string>
     <string name="onb_tip">Tap the small bubble to expand it. In the popup, the Connect tab sets up per-app CPU/RAM.</string>
+    <string name="tab_hw">Hardware</string>
 </resources>

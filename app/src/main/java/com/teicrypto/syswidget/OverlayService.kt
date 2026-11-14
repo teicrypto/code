@@ -157,6 +157,7 @@ class OverlayService : Service() {
 
         val connected = PrivShell.state() == PrivShell.State.READY
         updateConn(connected)
+        if (connected && expanded) loadDeepHardware()
 
         if (!expanded) return
 
@@ -294,22 +295,32 @@ class OverlayService : Service() {
         })
     }
 
-    private fun hardwareInfo(): String {
-        val am = getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val mi = ActivityManager.MemoryInfo().also { am.getMemoryInfo(it) }
-        val soc = if (Build.VERSION.SDK_INT >= 31) "${Build.SOC_MANUFACTURER} ${Build.SOC_MODEL}" else Build.HARDWARE
-        val dm = resources.displayMetrics
-        @Suppress("DEPRECATION")
-        val hz = try { wm.defaultDisplay.refreshRate.toInt() } catch (e: Exception) { 0 }
-        return listOf(
-            "${Build.MANUFACTURER} ${Build.MODEL}",
-            "SoC: $soc",
-            "Board: ${Build.BOARD}",
-            "CPU: ${Runtime.getRuntime().availableProcessors()} cores · ${Build.SUPPORTED_ABIS.firstOrNull() ?: ""}",
-            "RAM: ${String.format(Locale.US, "%.1f GB", mi.totalMem / 1073741824.0)}",
-            "Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
-            "Display: ${dm.widthPixels}x${dm.heightPixels} · ${dm.densityDpi} dpi · $hz Hz"
-        ).joinToString("\n")
+    private var hwBasic = ""
+    private var hwDeep = ""
+    private var hwLoading = false
+    private var deepLoading = false
+
+    private fun renderHw() {
+        if (!::hwText.isInitialized) return
+        hwText.text = (if (hwBasic.isEmpty()) "…" else hwBasic) + (if (hwDeep.isNotEmpty()) "\n\n$hwDeep" else "")
+    }
+
+    private fun loadHardware() {
+        if (hwBasic.isNotEmpty() || hwLoading) return
+        hwLoading = true
+        Thread {
+            val s = try { HardwareInfo.basic(applicationContext, wm) } catch (e: Throwable) { "N/A" }
+            handler.post { hwBasic = s; hwLoading = false; if (added) renderHw() }
+        }.start()
+    }
+
+    private fun loadDeepHardware() {
+        if (hwDeep.isNotEmpty() || deepLoading) return
+        deepLoading = true
+        Thread {
+            val s = try { HardwareInfo.deep(applicationContext) } catch (e: Throwable) { null }
+            handler.post { deepLoading = false; if (s != null) { hwDeep = s; if (added) renderHw() } }
+        }.start()
     }
 
     private fun buildUi() {
@@ -357,7 +368,7 @@ class OverlayService : Service() {
 
         // Tab
         val tabs = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        val names = listOf(R.string.tab_perf, R.string.tab_proc, R.string.tab_conn)
+        val names = listOf(R.string.tab_perf, R.string.tab_proc, R.string.tab_hw, R.string.tab_conn)
         for ((i, n) in names.withIndex()) {
             val t = tv(str(n), 12.5f, "#8A94A0", bold = true).apply {
                 gravity = Gravity.CENTER
@@ -377,15 +388,12 @@ class OverlayService : Service() {
         netC = chart(str(R.string.metric_net), "#C792EA", null)
         tempC = chart(str(R.string.chart_temp), "#FF7A7A", 80f, 20f)
         coresText = tv("", 10.5f, "#7CE0C3", mono = true).apply { setPadding(dp(6), dp(2), dp(6), dp(6)) }
-        hwText = tv(hardwareInfo(), 10.5f, "#C9D1D9", mono = true).apply { setPadding(dp(6), dp(2), dp(6), dp(6)) }
         perf.addView(cpuC)
         perf.addView(coresText)
         perf.addView(gpuC)
         perf.addView(ramC)
         perf.addView(netC)
         perf.addView(tempC)
-        perf.addView(tv(str(R.string.hw_title), 12f, "#8A94A0", bold = true).apply { setPadding(dp(6), dp(8), 0, dp(2)) })
-        perf.addView(hwText)
         tabContents.add(ScrollView(this).apply { addView(perf) })
 
         // --- Tab 1: Tiến trình ---
@@ -440,7 +448,13 @@ class OverlayService : Service() {
         proc.addView(tv(str(R.string.proc_gpu_note), 10.5f, "#8A94A0").apply { setPadding(dp(6), dp(8), dp(6), dp(4)) })
         tabContents.add(ScrollView(this).apply { addView(proc) })
 
-        // --- Tab 2: Kết nối ---
+        // --- Tab 2: Phần cứng ---
+        hwText = tv("…", 10.5f, "#C9D1D9", mono = true).apply { setPadding(dp(8), dp(8), dp(8), dp(8)) }
+        tabContents.add(ScrollView(this).apply { addView(hwText) })
+        renderHw()
+        loadHardware()
+
+        // --- Tab 3: Kết nối ---
         val conn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(4), dp(6), dp(4), dp(6))
@@ -462,13 +476,12 @@ class OverlayService : Service() {
             orientation = LinearLayout.HORIZONTAL
             setPadding(0, dp(6), 0, dp(6))
         }
-        bRow.addView(button(str(R.string.conn_start_pair), "#2A5A4A") { startPairing() })
-        bRow.addView(button(str(R.string.conn_notif_alt), "#2A2F36") {
+        bRow.addView(button(str(R.string.conn_start_pair), "#2A5A4A") {
+            // Android ẩn cửa sổ nổi trên màn hình ghép nối, nên mã được nhập qua thông báo
             startForegroundService(Intent(this, PairingService::class.java))
+            if (expanded) toggle() // thu nhỏ popup cho khỏi vướng
             openDevSettings()
-        }, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { leftMargin = dp(6) })
+        })
         conn.addView(bRow)
 
         fun field(hint: String, max: Int) = EditText(this).apply {
@@ -545,7 +558,7 @@ class OverlayService : Service() {
 
     /** Tab Kết nối cần bàn phím: bỏ NOT_FOCUSABLE và đưa popup lên cao để bàn phím không che. */
     private fun applyFocus() {
-        val needInput = expanded && tab == 2
+        val needInput = expanded && tab == 3
         if (needInput) {
             params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
             if (savedY < 0) { savedY = params.y; params.y = dp(24) }
