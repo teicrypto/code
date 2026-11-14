@@ -137,7 +137,12 @@ class AdbSetupActivity : Activity() {
             val ok = PrivShell.connect(applicationContext, force = true)
             runOnUiThread {
                 busy = false
-                Toast.makeText(this, if (ok) R.string.connect_ok else R.string.connect_fail, Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    if (ok) getString(R.string.connect_ok)
+                    else getString(R.string.connect_fail) + "\n" + (PrivShell.lastError ?: ""),
+                    Toast.LENGTH_LONG
+                ).show()
                 refresh()
             }
         }.start()

@@ -102,6 +102,19 @@ object PrivShell {
         log("connect: saved=$saved prop=$prop")
         if (prop != null && prop != saved && tryConnect(ctx, prop)) return true
 
+        // Dò cổng bằng mDNS của thư viện libadb (có xử lý địa chỉ cục bộ tốt hơn)
+        try {
+            val ok = SysAdbManager.getInstance(ctx.applicationContext).tlsAuto(ctx.applicationContext, 10_000L)
+            log("connect: libadb connectTls = $ok")
+            if (ok) {
+                connected = true
+                return true
+            }
+        } catch (e: Throwable) {
+            lastError = e.message ?: e.javaClass.simpleName
+            log("connect: libadb connectTls error: ${e.javaClass.simpleName}: ${e.message}")
+        }
+
         val port = NsdFinder.find(ctx, CONNECT_TYPE, if (force) 12_000L else 6000L) { false }
         log("connect: mDNS port=$port")
         if (port == null) {

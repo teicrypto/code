@@ -34,6 +34,11 @@ public class SysAdbManager extends AbsAdbConnectionManager {
         return INSTANCE;
     }
 
+    /** Tự tìm cổng TLS bằng mDNS của chính thư viện rồi kết nối (giống cách Shizuku làm). */
+    public boolean tlsAuto(Context context, long timeoutMs) throws Exception {
+        return connectTls(context, timeoutMs);
+    }
+
     private PrivateKey mPrivateKey;
     private Certificate mCertificate;
 
