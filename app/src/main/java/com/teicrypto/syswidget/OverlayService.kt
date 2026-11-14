@@ -229,6 +229,20 @@ class OverlayService : Service() {
             r.text.text = text
             if (v != null) r.chart?.add(v, "")
         }
+        keepOnScreen()
+    }
+
+    /** Popup cao hơn màn hình thì đẩy lên cho khỏi mất phần dưới. */
+    private fun keepOnScreen() {
+        root.post {
+            if (!added) return@post
+            val maxY = resources.displayMetrics.heightPixels - root.height - dp(24)
+            val y = params.y.coerceIn(0, maxOf(0, maxY))
+            if (y != params.y) {
+                params.y = y
+                try { wm.updateViewLayout(root, params) } catch (e: Exception) { }
+            }
+        }
     }
 
     // ---------------- Vòng đời ----------------
@@ -388,8 +402,8 @@ class OverlayService : Service() {
             bubble.addView(row)
             var chart: LineChartView? = null
             if (showGraphs && def.graph) {
-                chart = LineChartView(this, "", Color.parseColor(def.color), def.gMax, def.gMin, true)
-                bubble.addView(chart, LinearLayout.LayoutParams(dp(130), dp(26)))
+                chart = LineChartView(this, "", Color.parseColor(def.color), def.gMax, def.gMin, true, true)
+                bubble.addView(chart, LinearLayout.LayoutParams(dp(130), dp(18)).apply { bottomMargin = dp(2) })
             }
             osdRows.add(OsdRow(def, row, chart))
         }

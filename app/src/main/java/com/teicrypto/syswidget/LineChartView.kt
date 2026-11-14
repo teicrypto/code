@@ -20,7 +20,8 @@ class LineChartView(
     private val color: Int,
     private val fixedMax: Float?,
     private val fixedMin: Float = 0f,
-    private val compact: Boolean = false
+    private val compact: Boolean = false,
+    private val bare: Boolean = false   // kiểu OSD: không chữ, không lưới, chỉ vẽ đường
 ) : View(context) {
 
     private val data = ArrayDeque<Float>()
@@ -28,7 +29,7 @@ class LineChartView(
     private var label = ""
     private val d = resources.displayMetrics.density
 
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = Color.parseColor("#1A1F26") }
+    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { this.color = Color.parseColor(if (bare) "#66000000" else "#1A1F26") }
     private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         this.color = Color.parseColor("#2A2F36")
         strokeWidth = 1f
@@ -64,22 +65,24 @@ class LineChartView(
     override fun onDraw(canvas: Canvas) {
         val w = width.toFloat()
         val h = height.toFloat()
-        val radius = (if (compact) 8 else 12) * d
+        val radius = (if (bare) 3 else if (compact) 8 else 12) * d
         canvas.drawRoundRect(0f, 0f, w, h, radius, radius, bgPaint)
 
-        val pad = (if (compact) 6 else 10) * d
+        val pad = (if (bare) 2 else if (compact) 6 else 10) * d
         val left = pad
         val right = w - pad
-        val top = (if (compact) 20 else 26) * d
+        val top = if (bare) pad else (if (compact) 20 else 26) * d
         val bottom = h - pad
         val textY = (if (compact) 14 else 17) * d
 
-        for (i in 0..3) {
-            val y = top + (bottom - top) * i / 3f
-            canvas.drawLine(left, y, right, y, gridPaint)
+        if (!bare) {
+            for (i in 0..3) {
+                val y = top + (bottom - top) * i / 3f
+                canvas.drawLine(left, y, right, y, gridPaint)
+            }
+            canvas.drawText(title, left, textY, titlePaint)
+            canvas.drawText(label, right, textY, valuePaint)
         }
-        canvas.drawText(title, left, textY, titlePaint)
-        canvas.drawText(label, right, textY, valuePaint)
 
         if (data.size < 2) return
 
