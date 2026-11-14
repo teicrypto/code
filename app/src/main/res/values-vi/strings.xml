@@ -65,9 +65,9 @@
     <string name="pair_notif_channel">Ghép nối ADB</string>
     <string name="pair_notif_wait_title">Đang chờ ghép nối</string>
     <string name="pair_notif_wait_text">Mở Tùy chọn nhà phát triển → Gỡ lỗi không dây → Ghép nối thiết bị bằng mã ghép nối, giữ hộp thoại đó mở, rồi bấm \"Nhập mã\" và gõ 6 số ngay tại đây.</string>
-    <string name="pair_notif_ready_title">Ghép nối ADB</string>
+    <string name="pair_notif_ready_title">Đã tìm thấy dịch vụ ghép nối</string>
     <string name="pair_notif_enter">Đã tìm thấy cổng ghép nối. Nhập mã 6 số trong hộp thoại ghép nối.</string>
-    <string name="pair_notif_action">Nhập mã</string>
+    <string name="pair_notif_action">Nhập mã ghép nối</string>
     <string name="pair_notif_label">Mã 6 số</string>
     <string name="pair_ok">Đã ghép nối và kết nối</string>
     <string name="pair_no_port">Không tìm thấy cổng ghép nối. Hãy giữ hộp thoại ghép nối mở rồi thử lại.</string>
@@ -138,4 +138,25 @@
     <string name="onb_stop_popup">Đóng popup</string>
     <string name="onb_tip">Chạm vào bong bóng nhỏ để mở rộng. Trong popup, tab Kết nối giúp xem CPU/RAM từng app.</string>
     <string name="tab_hw">Phần cứng</string>
+    <string name="adb_title">Kết nối ADB</string>
+    <string name="adb_status_on">ADB đã kết nối</string>
+    <string name="adb_status_off">ADB chưa kết nối</string>
+    <string name="adb_card_wifi_title">Bắt đầu qua Gỡ lỗi không dây</string>
+    <string name="adb_card_wifi_desc">Trên Android 11 trở lên, bạn có thể bật Gỡ lỗi không dây và kết nối trực tiếp từ điện thoại, không cần máy tính.\n\nHãy xem hướng dẫn từng bước trước.</string>
+    <string name="adb_btn_guide">Hướng dẫn từng bước</string>
+    <string name="adb_btn_pairing">Ghép nối</string>
+    <string name="adb_btn_start">Bắt đầu</string>
+    <string name="adb_card_pc_title">Bắt đầu bằng máy tính</string>
+    <string name="adb_card_pc_desc">Cắm điện thoại vào máy tính và chạy một lệnh adb. Cần làm lại mỗi lần khởi động lại máy.</string>
+    <string name="adb_btn_cmd">Xem lệnh</string>
+    <string name="adb_cmd_body">Trên máy tính (đã bật Gỡ lỗi USB), chạy:\n\n%1$s\n\nRồi quay lại bấm Bắt đầu. Chọn \"Luôn cho phép\" trên điện thoại.</string>
+    <string name="adb_copy">Sao chép</string>
+    <string name="adb_copied">Đã sao chép</string>
+    <string name="adb_guide_body">1. Kết nối Wi-Fi.\n2. Bật Tùy chọn nhà phát triển (bấm 7 lần vào Số bản dựng trong Thông tin điện thoại).\n3. Bấm Ghép nối ở đây. Cho phép thông báo nếu được hỏi.\n4. Trong Gỡ lỗi không dây, bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở.\n5. Vuốt thanh thông báo xuống, bấm \"Nhập mã ghép nối\" và gõ 6 số.\n6. Khi báo đã kết nối là xong. Bấm Bắt đầu nếu chưa tự kết nối.</string>
+    <string name="pairing_title">Ghép nối</string>
+    <string name="pairing_need_notif">Quá trình ghép nối cần bạn thao tác với một thông báo của SysWidget. Hãy cho phép SysWidget gửi thông báo.</string>
+    <string name="pairing_notif_options">Tùy chọn thông báo</string>
+    <string name="pairing_help">Đang mở Gỡ lỗi không dây. Hãy bật lên, bấm \"Ghép nối thiết bị bằng mã ghép nối\" và giữ hộp thoại đó mở. Sau đó vuốt thanh thông báo xuống và bấm \"Nhập mã ghép nối\".</string>
+    <string name="btn_open_adb">Thiết lập kết nối ADB</string>
+    <string name="conn_tab_desc">Xem CPU/RAM từng app cần kết nối ADB tích hợp. Mở màn hình thiết lập để kết nối.</string>
 </resources>

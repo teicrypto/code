@@ -85,11 +85,6 @@ class OverlayService : Service() {
     private val labels = HashMap<String, String>()
 
     private lateinit var connStatus: TextView
-    private lateinit var portEt: EditText
-    private lateinit var codeEt: EditText
-    private lateinit var connResult: TextView
-    @Volatile private var pairing = false
-    @Volatile private var finding = false
 
     private val tabViews = ArrayList<TextView>()
     private val tabContents = ArrayList<View>()
@@ -209,7 +204,6 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         running = false
-        finding = false
         handler.removeCallbacksAndMessages(null)
         Prefs.sp(this).unregisterOnSharedPreferenceChangeListener(prefListener)
         if (added) {
@@ -454,66 +448,18 @@ class OverlayService : Service() {
         renderHw()
         loadHardware()
 
-        // --- Tab 3: Kết nối ---
+        // --- Tab 3: Kết nối (mở màn hình thiết lập kiểu Shizuku) ---
         val conn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(4), dp(6), dp(4), dp(6))
+            setPadding(dp(8), dp(10), dp(8), dp(10))
         }
-        connStatus = tv("", 12.5f, "#7CE0C3", bold = true)
+        connStatus = tv("", 13f, "#7CE0C3", bold = true)
         conn.addView(connStatus)
-
-        conn.addView(tv(str(R.string.conn_pc_title), 13f, "#FFFFFF", bold = true).apply { setPadding(0, dp(12), 0, dp(2)) })
-        conn.addView(tv(str(R.string.conn_pc_desc), 11.5f, "#C9D1D9"))
-        conn.addView(button(str(R.string.btn_adb_connect), "#2A5A4A") { doConnect() }.apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(6) }
+        conn.addView(tv(str(R.string.conn_tab_desc), 11.5f, "#C9D1D9").apply { setPadding(0, dp(8), 0, dp(8)) })
+        conn.addView(button(str(R.string.btn_open_adb), "#2A5A4A") {
+            startActivity(Intent(this, AdbSetupActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            if (expanded) toggle()
         })
-
-        conn.addView(tv(str(R.string.conn_wifi_title), 13f, "#FFFFFF", bold = true).apply { setPadding(0, dp(14), 0, dp(2)) })
-        conn.addView(tv(str(R.string.conn_wifi_desc), 11.5f, "#C9D1D9"))
-        val bRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            setPadding(0, dp(6), 0, dp(6))
-        }
-        bRow.addView(button(str(R.string.conn_start_pair), "#2A5A4A") {
-            // Android ẩn cửa sổ nổi trên màn hình ghép nối, nên mã được nhập qua thông báo
-            startForegroundService(Intent(this, PairingService::class.java))
-            if (expanded) toggle() // thu nhỏ popup cho khỏi vướng
-            openDevSettings()
-        })
-        conn.addView(bRow)
-
-        fun field(hint: String, max: Int) = EditText(this).apply {
-            this.hint = hint
-            setHintTextColor(Color.GRAY)
-            setTextColor(Color.WHITE)
-            textSize = 15f
-            inputType = InputType.TYPE_CLASS_NUMBER
-            filters = arrayOf(InputFilter.LengthFilter(max))
-            background = rounded("#1A1F26", 8)
-            setPadding(dp(10), dp(8), dp(10), dp(8))
-        }
-        portEt = field(str(R.string.hint_port), 5)
-        codeEt = field(str(R.string.hint_code), 6)
-        codeEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if ((s?.length ?: 0) == 6 && portEt.text.isNotEmpty()) doPair()
-            }
-        })
-        val fRow = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        fRow.addView(portEt, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        fRow.addView(codeEt, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply { leftMargin = dp(6) })
-        conn.addView(fRow)
-        conn.addView(button(str(R.string.btn_pair), "#2A5A4A") { doPair() }.apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { topMargin = dp(6) }
-        })
-        connResult = tv("", 11.5f, "#F2A65A").apply { setPadding(0, dp(8), 0, 0) }
-        conn.addView(connResult)
         tabContents.add(ScrollView(this).apply { addView(conn) })
 
         for (c in tabContents) {
@@ -558,7 +504,7 @@ class OverlayService : Service() {
 
     /** Tab Kết nối cần bàn phím: bỏ NOT_FOCUSABLE và đưa popup lên cao để bàn phím không che. */
     private fun applyFocus() {
-        val needInput = expanded && tab == 3
+        val needInput = false
         if (needInput) {
             params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
             if (savedY < 0) { savedY = params.y; params.y = dp(24) }
@@ -637,65 +583,6 @@ class OverlayService : Service() {
         } catch (e: Exception) {
             try { startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } catch (e2: Exception) { }
         }
-    }
-
-    private fun doConnect() {
-        connResult.text = str(R.string.conn_searching)
-        Thread {
-            val ok = PrivShell.connect(applicationContext, force = true)
-            handler.post {
-                if (!added) return@post
-                connResult.text = str(if (ok) R.string.connect_ok else R.string.connect_fail)
-                updateConn(ok)
-                if (ok) kick()
-            }
-        }.start()
-    }
-
-    /** Mở Gỡ lỗi không dây và tự tìm cổng ghép nối (mDNS) rồi điền vào ô cổng. */
-    private fun startPairing() {
-        openDevSettings()
-        if (finding) return
-        finding = true
-        connResult.text = str(R.string.conn_searching)
-        Thread {
-            val port = NsdFinder.find(applicationContext, "_adb-tls-pairing._tcp", 180_000) { !finding || !added }
-            finding = false
-            handler.post {
-                if (!added) return@post
-                if (port != null) {
-                    portEt.setText(port.toString())
-                    connResult.text = str(R.string.conn_port_found_fmt, port)
-                } else {
-                    connResult.text = str(R.string.pair_no_port)
-                }
-            }
-        }.start()
-    }
-
-    private fun doPair() {
-        if (pairing) return
-        val port = portEt.text.toString().toIntOrNull()
-        val code = codeEt.text.toString()
-        if (port == null || code.length != 6) {
-            Toast.makeText(this, str(R.string.pair_need_port_code), Toast.LENGTH_SHORT).show()
-            return
-        }
-        pairing = true
-        connResult.text = str(R.string.conn_searching)
-        Thread {
-            val ctx = applicationContext
-            val ok = PrivShell.pair(ctx, port, code) && PrivShell.connect(ctx, force = true)
-            pairing = false
-            handler.post {
-                if (!added) return@post
-                connResult.text = if (ok) str(R.string.pair_ok)
-                else str(R.string.pair_fail_fmt, PrivShell.lastError ?: "?")
-                if (ok) codeEt.setText("")
-                updateConn(ok)
-                if (ok) kick()
-            }
-        }.start()
     }
 
     // ---------------- Notification foreground ----------------

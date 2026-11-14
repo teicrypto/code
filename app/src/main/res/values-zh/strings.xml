@@ -65,7 +65,7 @@
     <string name="pair_notif_channel">ADB 配对</string>
     <string name="pair_notif_wait_title">等待配对</string>
     <string name="pair_notif_wait_text">打开 开发者选项 → 无线调试 → 使用配对码配对设备，保持该对话框打开，然后点击“输入配对码”并在此输入 6 位数字。</string>
-    <string name="pair_notif_ready_title">ADB 配对</string>
+    <string name="pair_notif_ready_title">已找到配对服务</string>
     <string name="pair_notif_enter">已找到配对端口，请输入配对对话框中的 6 位配对码。</string>
     <string name="pair_notif_action">输入配对码</string>
     <string name="pair_notif_label">6 位配对码</string>
@@ -138,4 +138,25 @@
     <string name="onb_stop_popup">关闭悬浮窗</string>
     <string name="onb_tip">点击小气泡展开。在悬浮窗的“连接”标签中设置各应用 CPU/内存查看。</string>
     <string name="tab_hw">硬件</string>
+    <string name="adb_title">ADB 连接</string>
+    <string name="adb_status_on">ADB 已连接</string>
+    <string name="adb_status_off">ADB 未连接</string>
+    <string name="adb_card_wifi_title">通过无线调试启动</string>
+    <string name="adb_card_wifi_desc">在 Android 11 及以上版本，可直接在手机上开启无线调试并连接，无需电脑。\n\n请先查看分步指南。</string>
+    <string name="adb_btn_guide">分步指南</string>
+    <string name="adb_btn_pairing">配对</string>
+    <string name="adb_btn_start">启动</string>
+    <string name="adb_card_pc_title">通过电脑启动</string>
+    <string name="adb_card_pc_desc">用 USB 连接电脑并运行一条 adb 命令。每次重启手机后都需要重做。</string>
+    <string name="adb_btn_cmd">查看命令</string>
+    <string name="adb_cmd_body">在电脑上（已开启 USB 调试）运行：\n\n%1$s\n\n然后返回点击“启动”，并在手机上选择“始终允许”。</string>
+    <string name="adb_copy">复制</string>
+    <string name="adb_copied">已复制</string>
+    <string name="adb_guide_body">1. 连接 Wi-Fi。\n2. 开启开发者选项（在“关于手机”连续点击版本号 7 次）。\n3. 点击这里的“配对”，如有提示请允许通知。\n4. 在无线调试中开启它，点击“使用配对码配对设备”并保持对话框打开。\n5. 下拉通知栏，点击“输入配对码”并输入 6 位数字。\n6. 显示已连接即完成。若未自动连接，请点击“启动”。</string>
+    <string name="pairing_title">配对</string>
+    <string name="pairing_need_notif">配对过程需要您操作 SysWidget 的通知。请允许 SysWidget 发送通知。</string>
+    <string name="pairing_notif_options">通知选项</string>
+    <string name="pairing_help">正在打开无线调试。请开启它，点击“使用配对码配对设备”并保持该对话框打开，然后下拉通知栏并点击“输入配对码”。</string>
+    <string name="btn_open_adb">ADB 连接设置</string>
+    <string name="conn_tab_desc">查看各应用 CPU/内存需要内置 ADB 连接。请打开设置界面进行连接。</string>
 </resources>

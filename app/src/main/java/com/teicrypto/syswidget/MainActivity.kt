@@ -124,6 +124,11 @@ class MainActivity : Activity() {
         root.addView(openBtn)
 
         root.addView(Button(this).apply {
+            text = getString(R.string.btn_open_adb)
+            setOnClickListener { startActivity(Intent(this@MainActivity, AdbSetupActivity::class.java)) }
+        })
+
+        root.addView(Button(this).apply {
             text = getString(R.string.onb_stop_popup)
             setOnClickListener { stopService(Intent(this@MainActivity, OverlayService::class.java)) }
         })
