@@ -49,8 +49,8 @@ object PlayBilling {
         return sp.getBoolean(KEY_OK, false) && System.currentTimeMillis() - sp.getLong(KEY_AT, 0L) < OFFLINE_MS
     }
 
-    /** Premium từ bất kỳ nguồn nào: Google Play hoặc gói được cấp trong Firestore. */
-    fun hasPremium(c: Context): Boolean = isPremium(c) || (Account.cached?.isPremium == true)
+    /** Premium: lấy từ Google Play (gắn với tài khoản Google Play của người dùng). */
+    fun hasPremium(c: Context): Boolean = isPremium(c)
 
     /** Giá hiển thị đã định dạng theo nước của người dùng (vd "9.999 ₫"), null nếu chưa tải được. */
     fun priceText(): String? =
@@ -150,7 +150,6 @@ object PlayBilling {
         val pd = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(d).setOfferToken(offer.offerToken).build()
         val b = BillingFlowParams.newBuilder().setProductDetailsParamsList(listOf(pd))
-        Account.user?.uid?.let { b.setObfuscatedAccountId(it) }
         cl.launchBillingFlow(a, b.build())
     }
 

@@ -57,34 +57,13 @@ class MainActivity : Activity() {
         }
         adBox.visibility = if (prem) android.view.View.GONE else android.view.View.VISIBLE
     }
-    private lateinit var accText: TextView
-    private lateinit var accBtn: Button
-    private val authListener = com.google.firebase.auth.FirebaseAuth.AuthStateListener { runOnUiThread { refreshAccount() } }
-
-    private fun refreshAccount() {
-        if (!::accText.isInitialized) return
-        val u = Account.user
-        if (u == null) {
-            accText.text = getString(R.string.acc_signed_out_hint)
-            accBtn.text = getString(R.string.acc_signin) + " / " + getString(R.string.acc_register)
-            accBtn.setOnClickListener { startActivity(Intent(this, AuthActivity::class.java)) }
-        } else {
-            accText.text = (u.email ?: u.uid) + " · " + Account.planLabel(this, Account.cached)
-            accBtn.text = getString(R.string.acc_open_profile)
-            accBtn.setOnClickListener { startActivity(Intent(this, ProfileActivity::class.java)) }
-            Account.loadPlan { _, _ -> runOnUiThread { if (Account.user != null) accText.text = (Account.user?.email ?: "") + " · " + Account.planLabel(this, Account.cached) } }
-        }
-    }
-
     override fun onStart() {
         super.onStart()
         PlayBilling.addListener(billingListener)
-        Account.auth.addAuthStateListener(authListener)
     }
 
     override fun onStop() {
         PlayBilling.removeListener(billingListener)
-        Account.auth.removeAuthStateListener(authListener)
         super.onStop()
     }
 
@@ -164,16 +143,6 @@ class MainActivity : Activity() {
         premBtn = Button(this)
         root.addView(premText)
         root.addView(premBtn)
-
-        // Thẻ tài khoản: trạng thái đăng nhập đồng bộ qua AuthStateListener
-        accText = TextView(this).apply {
-            textSize = 14f
-            setTextColor(Color.parseColor("#7CE0C3"))
-            setPadding(0, pad / 2, 0, 0)
-        }
-        accBtn = Button(this)
-        root.addView(accText)
-        root.addView(accBtn)
 
         permStatus = TextView(this).apply {
             textSize = 15f
@@ -295,7 +264,6 @@ class MainActivity : Activity() {
         PlayBilling.refresh()
         refreshPremium()
         refreshState()
-        refreshAccount()
         // Vừa cấp quyền xong: tự bật popup
         if (waitingPermission && Settings.canDrawOverlays(this)) {
             waitingPermission = false
