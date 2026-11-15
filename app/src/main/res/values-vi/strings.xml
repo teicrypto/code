@@ -229,4 +229,16 @@
     <string name="acc_loading">Đang tải…</string>
     <string name="acc_switch_to_register">Chưa có tài khoản? Đăng ký</string>
     <string name="acc_switch_to_login">Đã có tài khoản? Đăng nhập</string>
+    <string name="ad_gate_title">Xem quảng cáo để bật</string>
+    <string name="ad_gate_msg">Xem một quảng cáo ngắn để bật tính năng này. Sau đó bạn có thể bật tắt thoải mái một thời gian mà không phải xem thêm.</string>
+    <string name="ad_gate_watch">Xem quảng cáo</string>
+    <string name="ad_gate_cancel">Hủy</string>
+    <string name="ad_not_ready">Quảng cáo chưa sẵn sàng, vui lòng thử lại sau giây lát.</string>
+    <string name="ad_not_completed">Chưa xem hết quảng cáo nên chưa bật.</string>
+    <string name="acc_delete">Xóa tài khoản</string>
+    <string name="acc_delete_title">Xóa tài khoản của bạn?</string>
+    <string name="acc_delete_msg">Tài khoản và dữ liệu hồ sơ lưu cho tài khoản này sẽ bị xóa vĩnh viễn. Không thể hoàn tác.</string>
+    <string name="acc_delete_confirm">Xóa</string>
+    <string name="acc_deleted">Đã xóa tài khoản</string>
+    <string name="acc_delete_relogin">Vì lý do bảo mật, hãy đăng xuất, đăng nhập lại rồi xóa tài khoản.</string>
 </resources>

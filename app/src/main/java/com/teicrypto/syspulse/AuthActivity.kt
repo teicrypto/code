@@ -26,6 +26,11 @@ import com.google.firebase.auth.GoogleAuthProvider
 /** Đăng nhập / đăng ký bằng Email + Mật khẩu hoặc Google. */
 class AuthActivity : Activity() {
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
+
     private val handler = Handler(Looper.getMainLooper())
     private var register = false
     private var busy = false

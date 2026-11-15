@@ -17,6 +17,11 @@ import android.widget.TextView
 /** Màn hình kết nối qua Shizuku: trạng thái, mở/cài Shizuku, cấp quyền. */
 class AdbSetupActivity : Activity() {
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
+
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var status: TextView
     private lateinit var statusCard: LinearLayout

@@ -236,4 +236,16 @@
     <string name="acc_loading">Loading…</string>
     <string name="acc_switch_to_register">No account? Register</string>
     <string name="acc_switch_to_login">Have an account? Sign in</string>
+    <string name="ad_gate_title">Watch an ad to turn on</string>
+    <string name="ad_gate_msg">Watch a short ad to turn this on. After that you can switch options on and off freely for a while without more ads.</string>
+    <string name="ad_gate_watch">Watch ad</string>
+    <string name="ad_gate_cancel">Cancel</string>
+    <string name="ad_not_ready">Ad is not ready yet. Please try again in a moment.</string>
+    <string name="ad_not_completed">Ad not completed, setting stays off.</string>
+    <string name="acc_delete">Delete account</string>
+    <string name="acc_delete_title">Delete your account?</string>
+    <string name="acc_delete_msg">Your account and the profile data stored for it will be permanently deleted. This cannot be undone.</string>
+    <string name="acc_delete_confirm">Delete</string>
+    <string name="acc_deleted">Account deleted</string>
+    <string name="acc_delete_relogin">For security, sign out, sign in again, then delete the account.</string>
 </resources>

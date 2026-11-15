@@ -229,4 +229,16 @@
     <string name="acc_loading">加载中…</string>
     <string name="acc_switch_to_register">没有账户？注册</string>
     <string name="acc_switch_to_login">已有账户？登录</string>
+    <string name="ad_gate_title">观看广告以开启</string>
+    <string name="ad_gate_msg">观看一段简短广告即可开启此功能。之后一段时间内可随意开关，无需再看广告。</string>
+    <string name="ad_gate_watch">观看广告</string>
+    <string name="ad_gate_cancel">取消</string>
+    <string name="ad_not_ready">广告尚未准备好，请稍后再试。</string>
+    <string name="ad_not_completed">未看完广告，设置保持关闭。</string>
+    <string name="acc_delete">删除账户</string>
+    <string name="acc_delete_title">删除您的账户？</string>
+    <string name="acc_delete_msg">您的账户及其存储的资料将被永久删除，无法恢复。</string>
+    <string name="acc_delete_confirm">删除</string>
+    <string name="acc_deleted">账户已删除</string>
+    <string name="acc_delete_relogin">出于安全考虑，请先退出登录，重新登录后再删除账户。</string>
 </resources>

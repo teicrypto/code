@@ -17,6 +17,10 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 
 /**
  * Màn hình chính chỉ để hướng dẫn cấp quyền và bật popup Task Manager.
@@ -24,6 +28,12 @@ import android.widget.Toast
  */
 class MainActivity : Activity() {
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
+
+    private var adView: AdView? = null
     private lateinit var accText: TextView
     private lateinit var accBtn: Button
     private val authListener = com.google.firebase.auth.FirebaseAuth.AuthStateListener { runOnUiThread { refreshAccount() } }
@@ -196,6 +206,16 @@ class MainActivity : Activity() {
             ScrollView(this).apply { isFillViewport = true; addView(root) },
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
         )
+        // Banner AdMob ở đáy màn hình chính
+        MobileAds.initialize(this) {}
+        adView = AdView(this).apply {
+            setAdSize(AdSize.BANNER)
+            adUnitId = getString(R.string.admob_banner_id)
+            loadAd(AdRequest.Builder().build())
+        }
+        outer.addView(adView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { gravity = Gravity.CENTER_HORIZONTAL })
         setContentView(outer)
 
 
@@ -212,6 +232,7 @@ class MainActivity : Activity() {
             recreate()
             return
         }
+        adView?.resume()
         refreshState()
         refreshAccount()
         // Vừa cấp quyền xong: tự bật popup
@@ -222,10 +243,12 @@ class MainActivity : Activity() {
     }
 
     override fun onPause() {
+        adView?.pause()
         super.onPause()
     }
 
     override fun onDestroy() {
+        adView?.destroy()
         super.onDestroy()
     }
 }

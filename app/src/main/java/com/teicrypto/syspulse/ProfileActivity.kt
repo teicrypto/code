@@ -1,6 +1,7 @@
 package com.teicrypto.syspulse
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -15,6 +16,11 @@ import com.google.firebase.auth.FirebaseAuth
 
 /** Trang hồ sơ: email, UID, trạng thái xác thực, gói hiện tại. Tự thoát nếu đăng xuất. */
 class ProfileActivity : Activity() {
+
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
 
     private lateinit var emailTv: TextView
     private lateinit var uidTv: TextView
@@ -109,6 +115,28 @@ class ProfileActivity : Activity() {
             Account.signOut()
             Toast.makeText(this, R.string.acc_logged_out, Toast.LENGTH_SHORT).show()
             finish()
+        })
+        out.addView(UiKit.pill(this, getString(R.string.acc_delete), "🗑") {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.acc_delete_title)
+                .setMessage(R.string.acc_delete_msg)
+                .setPositiveButton(R.string.acc_delete_confirm) { _, _ ->
+                    Account.deleteAccount { ok, needRelogin, e ->
+                        runOnUiThread {
+                            when {
+                                ok -> {
+                                    Toast.makeText(this, R.string.acc_deleted, Toast.LENGTH_LONG).show()
+                                    Account.signOut()
+                                    finish()
+                                }
+                                needRelogin -> msg.text = getString(R.string.acc_delete_relogin)
+                                else -> msg.text = Account.errorText(this, e)
+                            }
+                        }
+                    }
+                }
+                .setNegativeButton(R.string.ad_gate_cancel, null)
+                .show()
         })
         root.addView(out)
 

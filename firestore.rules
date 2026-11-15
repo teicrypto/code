@@ -40,7 +40,8 @@ service cloud.firestore {
         && (!('lastLoginAt' in request.resource.data.diff(resource.data).affectedKeys())
             || request.resource.data.lastLoginAt == request.time);
 
-      allow delete: if false;
+      // Chủ tài khoản được xóa hồ sơ của mình (chức năng Xóa tài khoản theo yêu cầu của Google Play).
+      allow delete: if isOwner(uid);
     }
 
     // Người dùng chỉ đọc quyền của chính mình, tuyệt đối không được ghi.

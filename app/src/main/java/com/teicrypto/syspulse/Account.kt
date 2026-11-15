@@ -93,6 +93,24 @@ object Account {
             }
     }
 
+    /** Xóa tài khoản: xóa hồ sơ Firestore rồi xóa người dùng Firebase. needRelogin = true nếu phải đăng nhập lại mới xóa được. */
+    fun deleteAccount(cb: (ok: Boolean, needRelogin: Boolean, error: Exception?) -> Unit) {
+        val u = user ?: run { cb(true, false, null); return }
+        FirebaseFirestore.getInstance().collection("users").document(u.uid).delete()
+            .addOnCompleteListener {
+                // Dù xóa hồ sơ thất bại (chưa có hồ sơ/ mạng) vẫn thử xóa người dùng
+                u.delete().addOnCompleteListener { t ->
+                    if (t.isSuccessful) {
+                        cached = null
+                        cb(true, false, null)
+                    } else {
+                        val e = t.exception
+                        cb(false, e is com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException, e)
+                    }
+                }
+            }
+    }
+
     fun signOut() {
         cached = null
         auth.signOut()

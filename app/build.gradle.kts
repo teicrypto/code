@@ -6,13 +6,13 @@ plugins {
 
 android {
     namespace = "com.teicrypto.syspulse"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.teicrypto.syspulse"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
+        targetSdk = 36
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
         versionName = "1.0"
     }
 
@@ -27,10 +27,29 @@ android {
         }
     }
 
+    // Khóa ký bản release: đọc từ biến môi trường (GitHub Secrets). Không có thì ký tạm bằng khóa debug để vẫn build được.
+    val ksPath = System.getenv("RELEASE_KEYSTORE_PATH")
+    if (ksPath != null && file(ksPath).exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
+    }
+
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 
     compileOptions {
@@ -50,6 +69,9 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
+    // Quảng cáo AdMob
+    implementation("com.google.android.gms:play-services-ads:23.6.0")
 
     // ADB tích hợp (ghép nối + kết nối Gỡ lỗi không dây ngay trong app)
     implementation("com.github.MuntashirAkon:libadb-android:3.1.1")

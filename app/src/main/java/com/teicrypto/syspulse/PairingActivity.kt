@@ -24,6 +24,11 @@ import android.widget.TextView
  */
 class PairingActivity : Activity() {
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
+
     private lateinit var warn: LinearLayout
     private lateinit var help: TextView
     private var launched = false

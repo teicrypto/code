@@ -22,6 +22,11 @@ import android.widget.TextView
 /** Màn hình Cài đặt: ngôn ngữ, biểu đồ mini, bong bóng, thanh trạng thái. */
 class SettingsActivity : Activity() {
 
+    override fun onContentChanged() {
+        super.onContentChanged()
+        Edge.apply(this)
+    }
+
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(LocaleHelper.wrap(base))
     }
@@ -35,6 +40,7 @@ class SettingsActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AdGate.preload(this)
         val pad = (16 * resources.displayMetrics.density).toInt()
 
         val root = LinearLayout(this).apply {
@@ -88,9 +94,22 @@ class SettingsActivity : Activity() {
                 textSize = 15f
                 setPadding(0, pad / 2, 0, pad / 2)
                 isChecked = Prefs.sp(this@SettingsActivity).getBoolean(key, def)
+                var guard = false
+                val sw = this
                 setOnCheckedChangeListener { _, on ->
-                    Prefs.sp(this@SettingsActivity).edit().putBoolean(key, on).apply()
-                    onChange?.invoke(on)
+                    if (guard) return@setOnCheckedChangeListener
+                    if (on && !AdGate.isFree(this@SettingsActivity)) {
+                        // Chưa được bật: trả về tắt, xem quảng cáo xong mới bật
+                        guard = true; sw.isChecked = false; guard = false
+                        AdGate.require(this@SettingsActivity, onGranted = {
+                            guard = true; sw.isChecked = true; guard = false
+                            Prefs.sp(this@SettingsActivity).edit().putBoolean(key, true).apply()
+                            onChange?.invoke(true)
+                        })
+                    } else {
+                        Prefs.sp(this@SettingsActivity).edit().putBoolean(key, on).apply()
+                        onChange?.invoke(on)
+                    }
                 }
             }
 
