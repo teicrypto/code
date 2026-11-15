@@ -248,4 +248,12 @@
     <string name="acc_delete_confirm">Delete</string>
     <string name="acc_deleted">Account deleted</string>
     <string name="acc_delete_relogin">For security, sign out, sign in again, then delete the account.</string>
+    <string name="plan_premium_3m">Premium 3 months</string>
+    <string name="premium_benefit">Premium: all features, no ads</string>
+    <string name="premium_active">★ Premium active: all features, no ads</string>
+    <string name="premium_upgrade">★ Upgrade to Premium</string>
+    <string name="premium_upgrade_fmt">★ Upgrade to Premium · %1$s / 3 months</string>
+    <string name="premium_manage">Manage subscription</string>
+    <string name="premium_not_ready">Store is not ready yet. Check your connection and try again in a moment.</string>
+    <string name="premium_error">Purchase could not be completed. Please try again.</string>
 </resources>

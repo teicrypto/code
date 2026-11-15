@@ -29,6 +29,8 @@ class ProfileActivity : Activity() {
     private lateinit var planTv: TextView
     private lateinit var expTv: TextView
     private lateinit var msg: TextView
+    private lateinit var premBtn: TextView
+    private val billingListener = Runnable { render() }
 
     private val listener = FirebaseAuth.AuthStateListener { a ->
         if (a.currentUser == null) finish() else runOnUiThread { render() }
@@ -101,7 +103,9 @@ class ProfileActivity : Activity() {
         plan.addView(planTv)
         expTv = value(14f)
         plan.addView(expTv)
-        plan.addView(UiKit.pill(this, getString(R.string.acc_refresh), "↻") { loadPlan() })
+        plan.addView(UiKit.pill(this, getString(R.string.acc_refresh), "↻") { PlayBilling.refresh(); loadPlan() })
+        premBtn = UiKit.pill(this, getString(R.string.premium_upgrade), "★") { }
+        plan.addView(premBtn)
         msg = TextView(this).apply {
             textSize = 14f
             setTextColor(Color.parseColor("#F2A65A"))
@@ -155,6 +159,14 @@ class ProfileActivity : Activity() {
         verifyTv.setTextColor(Color.parseColor(if (u.isEmailVerified) "#7CE0C3" else "#F2A65A"))
         verifyBtn.visibility = if (u.isEmailVerified) android.view.View.GONE else android.view.View.VISIBLE
         showPlan(Account.cached)
+        if (PlayBilling.hasPremium(this)) {
+            premBtn.text = getString(R.string.premium_manage)
+            premBtn.setOnClickListener { PlayBilling.manage(this) }
+        } else {
+            val price = PlayBilling.priceText()
+            premBtn.text = if (price != null) getString(R.string.premium_upgrade_fmt, price) else getString(R.string.premium_upgrade)
+            premBtn.setOnClickListener { PlayBilling.launch(this) }
+        }
     }
 
     private fun showPlan(p: Account.Plan?) {
@@ -178,16 +190,19 @@ class ProfileActivity : Activity() {
     override fun onStart() {
         super.onStart()
         Account.auth.addAuthStateListener(listener)
+        PlayBilling.addListener(billingListener)
     }
 
     override fun onResume() {
         super.onResume()
+        PlayBilling.init(this)
         render()
         loadPlan()
     }
 
     override fun onStop() {
         Account.auth.removeAuthStateListener(listener)
+        PlayBilling.removeListener(billingListener)
         super.onStop()
     }
 }

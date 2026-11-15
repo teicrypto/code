@@ -241,4 +241,12 @@
     <string name="acc_delete_confirm">删除</string>
     <string name="acc_deleted">账户已删除</string>
     <string name="acc_delete_relogin">出于安全考虑，请先退出登录，重新登录后再删除账户。</string>
+    <string name="plan_premium_3m">高级版 3 个月</string>
+    <string name="premium_benefit">高级版：全部功能，无广告</string>
+    <string name="premium_active">★ 高级版已开通：全部功能，无广告</string>
+    <string name="premium_upgrade">★ 升级高级版</string>
+    <string name="premium_upgrade_fmt">★ 升级高级版 · %1$s / 3 个月</string>
+    <string name="premium_manage">管理订阅</string>
+    <string name="premium_not_ready">商店尚未就绪，请检查网络后稍后再试。</string>
+    <string name="premium_error">无法完成交易，请重试。</string>
 </resources>

@@ -38,7 +38,7 @@ object Account {
     val isSignedIn: Boolean get() = user != null
 
     fun planLabel(ctx: Context, p: Plan?): String = ctx.getString(
-        when (p?.effective) {
+        if (PlayBilling.isPremium(ctx) && p?.effective != LIFETIME) R.string.plan_premium_3m else when (p?.effective) {
             LIFETIME -> R.string.plan_lifetime
             MONTHLY -> R.string.plan_monthly
             else -> R.string.plan_free

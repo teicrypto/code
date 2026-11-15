@@ -17,7 +17,9 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -34,6 +36,27 @@ class MainActivity : Activity() {
     }
 
     private var adView: AdView? = null
+    private lateinit var adBox: android.widget.FrameLayout
+    private lateinit var premText: TextView
+    private lateinit var premBtn: Button
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val billingListener = Runnable { refreshPremium() }
+
+    private fun refreshPremium() {
+        if (!::premBtn.isInitialized) return
+        val prem = PlayBilling.hasPremium(this)
+        if (prem) {
+            premText.text = getString(R.string.premium_active)
+            premBtn.text = getString(R.string.premium_manage)
+            premBtn.setOnClickListener { PlayBilling.manage(this) }
+        } else {
+            premText.text = getString(R.string.premium_benefit)
+            val price = PlayBilling.priceText()
+            premBtn.text = if (price != null) getString(R.string.premium_upgrade_fmt, price) else getString(R.string.premium_upgrade)
+            premBtn.setOnClickListener { PlayBilling.launch(this) }
+        }
+        adBox.visibility = if (prem) android.view.View.GONE else android.view.View.VISIBLE
+    }
     private lateinit var accText: TextView
     private lateinit var accBtn: Button
     private val authListener = com.google.firebase.auth.FirebaseAuth.AuthStateListener { runOnUiThread { refreshAccount() } }
@@ -55,10 +78,12 @@ class MainActivity : Activity() {
 
     override fun onStart() {
         super.onStart()
+        PlayBilling.addListener(billingListener)
         Account.auth.addAuthStateListener(authListener)
     }
 
     override fun onStop() {
+        PlayBilling.removeListener(billingListener)
         Account.auth.removeAuthStateListener(authListener)
         super.onStop()
     }
@@ -129,6 +154,16 @@ class MainActivity : Activity() {
             })
         }
         root.addView(langRow)
+
+        // Gói Premium (Google Play Billing)
+        premText = TextView(this).apply {
+            textSize = 14f
+            setTextColor(Color.parseColor("#F2C94C"))
+            setPadding(0, pad / 2, 0, 0)
+        }
+        premBtn = Button(this)
+        root.addView(premText)
+        root.addView(premBtn)
 
         // Thẻ tài khoản: trạng thái đăng nhập đồng bộ qua AuthStateListener
         accText = TextView(this).apply {
@@ -206,16 +241,30 @@ class MainActivity : Activity() {
             ScrollView(this).apply { isFillViewport = true; addView(root) },
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f)
         )
-        // Banner AdMob ở đáy màn hình chính
+        // Banner AdMob luôn nằm ở đáy màn hình chính (giữ sẵn chỗ 50dp, ẩn khi là Premium)
         MobileAds.initialize(this) {}
-        adView = AdView(this).apply {
+        adBox = android.widget.FrameLayout(this)
+        val av = AdView(this).apply {
             setAdSize(AdSize.BANNER)
             adUnitId = getString(R.string.admob_banner_id)
-            loadAd(AdRequest.Builder().build())
         }
-        outer.addView(adView, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { gravity = Gravity.CENTER_HORIZONTAL })
+        av.adListener = object : AdListener() {
+            override fun onAdFailedToLoad(e: LoadAdError) {
+                // Chưa có quảng cáo (vd đơn vị mới): thử lại sau 60 giây
+                handler.postDelayed({
+                    if (!isDestroyed && !PlayBilling.hasPremium(this@MainActivity)) av.loadAd(AdRequest.Builder().build())
+                }, 60_000L)
+            }
+        }
+        adView = av
+        adBox.addView(av, android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER
+        ))
+        outer.addView(adBox, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, (56 * resources.displayMetrics.density).toInt()
+        ))
+        av.loadAd(AdRequest.Builder().build())
+        PlayBilling.init(this)
         setContentView(outer)
 
 
@@ -233,6 +282,8 @@ class MainActivity : Activity() {
             return
         }
         adView?.resume()
+        PlayBilling.refresh()
+        refreshPremium()
         refreshState()
         refreshAccount()
         // Vừa cấp quyền xong: tự bật popup
@@ -248,6 +299,7 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
         adView?.destroy()
         super.onDestroy()
     }

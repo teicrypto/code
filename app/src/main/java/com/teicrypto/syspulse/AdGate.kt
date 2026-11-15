@@ -14,18 +14,19 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 /**
  * Cổng quảng cáo có thưởng cho công tắc trong Cài đặt.
  * - Bật công tắc: phải xem hết 1 quảng cáo có thưởng (người dùng đồng ý trước qua hộp thoại).
- * - Sau khi xem xong: 30 phút không phải xem lại (không hiện bộ đếm).
+ * - Sau khi xem xong: 7 phút không phải xem lại (không hiện bộ đếm).
  * - Tắt công tắc: không cần quảng cáo.
  */
 object AdGate {
     private const val KEY_UNTIL = "ad_free_until"
-    private const val FREE_MS = 30L * 60 * 1000
+    private const val FREE_MS = 7L * 60 * 1000
 
     private var ad: RewardedAd? = null
     private var loading = false
 
-    /** Còn trong 30 phút miễn quảng cáo? Chống chỉnh đồng hồ lùi: hạn không bao giờ vượt quá 30 phút tính từ bây giờ. */
+    /** Còn trong 7 phút miễn quảng cáo (hoặc là Premium)? Chống chỉnh đồng hồ lùi: hạn không bao giờ vượt quá 7 phút tính từ bây giờ. */
     fun isFree(c: Context): Boolean {
+        if (PlayBilling.hasPremium(c)) return true // Premium: không bao giờ phải xem quảng cáo
         val until = Prefs.sp(c).getLong(KEY_UNTIL, 0L)
         val now = System.currentTimeMillis()
         return until > now && until - now <= FREE_MS
