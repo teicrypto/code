@@ -14,19 +14,11 @@
       },
       "oauth_client": [
         {
-<<<<<<< HEAD
-          "client_id": "496658286692-t0pdq9uto41osn1776gijfpjq01krbpv.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.teicrypto.syspulse",
-            "certificate_hash": "3ca653eb605e0582bf23225cf5fcb50f09f21d1d"
-=======
           "client_id": "496658286692-fu3gjaeu21c7e7r7bgi7ava9tkv16fan.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.teicrypto.syspulse",
             "certificate_hash": "716d668806b534bc4603502c06078cac4e8378b6"
->>>>>>> a232b18 (Update SysWidget)
           }
         },
         {
