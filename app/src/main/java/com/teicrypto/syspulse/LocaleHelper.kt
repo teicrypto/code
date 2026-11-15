@@ -8,9 +8,9 @@ import java.util.Locale
 object LocaleHelper {
     fun wrap(base: Context): Context {
         val locale = when (Prefs.lang(base)) {
-            "en" -> Locale.ENGLISH
+            "vi" -> Locale.forLanguageTag("vi")
             "zh" -> Locale.SIMPLIFIED_CHINESE
-            else -> Locale.forLanguageTag("vi")
+            else -> Locale.ENGLISH
         }
         Locale.setDefault(locale)
         val cfg = Configuration(base.resources.configuration)

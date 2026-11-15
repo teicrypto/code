@@ -249,4 +249,6 @@
     <string name="premium_manage">管理订阅</string>
     <string name="premium_not_ready">商店尚未就绪，请检查网络后稍后再试。</string>
     <string name="premium_error">无法完成交易，请重试。</string>
+    <string name="proc_need_adb_app">查看各应用的 CPU/内存需要连接 Shizuku。点击下方按钮进行设置。</string>
+    <string name="hw_refresh">刷新</string>
 </resources>

@@ -249,4 +249,6 @@
     <string name="premium_manage">Quản lý đăng ký</string>
     <string name="premium_not_ready">Cửa hàng chưa sẵn sàng. Kiểm tra mạng và thử lại sau giây lát.</string>
     <string name="premium_error">Không hoàn tất được giao dịch. Vui lòng thử lại.</string>
+    <string name="proc_need_adb_app">CPU/RAM từng ứng dụng cần kết nối Shizuku. Bấm nút bên dưới để thiết lập.</string>
+    <string name="hw_refresh">Làm mới</string>
 </resources>

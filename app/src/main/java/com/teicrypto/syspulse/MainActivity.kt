@@ -198,6 +198,16 @@ class MainActivity : Activity() {
         }
         root.addView(openBtn)
 
+        // Hai màn hình trong app (có banner ở đáy)
+        root.addView(Button(this).apply {
+            text = getString(R.string.tab_proc)
+            setOnClickListener { startActivity(Intent(this@MainActivity, ProcessesActivity::class.java)) }
+        })
+        root.addView(Button(this).apply {
+            text = getString(R.string.tab_hw)
+            setOnClickListener { startActivity(Intent(this@MainActivity, DeviceInfoActivity::class.java)) }
+        })
+
         root.addView(Button(this).apply {
             text = getString(R.string.btn_open_adb)
             setOnClickListener { startActivity(Intent(this@MainActivity, AdbSetupActivity::class.java)) }

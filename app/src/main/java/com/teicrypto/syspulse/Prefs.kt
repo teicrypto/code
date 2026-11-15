@@ -16,7 +16,7 @@ object Prefs {
         return app.getSharedPreferences("settings", Context.MODE_PRIVATE)
     }
 
-    fun lang(c: Context): String = sp(c).getString(LANG, "vi") ?: "vi"
+    fun lang(c: Context): String = sp(c).getString(LANG, "en") ?: "en"
     fun miniCharts(c: Context): Boolean = sp(c).getBoolean(MINI_CHARTS, true)
     fun bubbleExtra(c: Context): Boolean = sp(c).getBoolean(BUBBLE_EXTRA, true)
     fun statusBar(c: Context): Boolean = sp(c).getBoolean(STATUS_BAR, false)

@@ -256,4 +256,6 @@
     <string name="premium_manage">Manage subscription</string>
     <string name="premium_not_ready">Store is not ready yet. Check your connection and try again in a moment.</string>
     <string name="premium_error">Purchase could not be completed. Please try again.</string>
+    <string name="proc_need_adb_app">Per-app CPU/RAM needs a Shizuku connection. Tap the button below to set it up.</string>
+    <string name="hw_refresh">Refresh</string>
 </resources>

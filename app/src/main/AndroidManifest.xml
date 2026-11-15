@@ -69,6 +69,12 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
+        <activity
+            android:name=".ProcessesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DeviceInfoActivity"
+            android:exported="false" />
 
         <service
             android:name=".PairingService"

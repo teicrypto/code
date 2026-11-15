@@ -87,7 +87,7 @@ class SettingsActivity : Activity() {
         root.addView(group)
 
         // ---- Công tắc ----
-        fun toggle(textRes: Int, key: String, def: Boolean, onChange: ((Boolean) -> Unit)? = null) =
+        fun toggle(textRes: Int, key: String, def: Boolean, free: Boolean = false, onChange: ((Boolean) -> Unit)? = null) =
             Switch(this).apply {
                 text = getString(textRes)
                 setTextColor(Color.WHITE)
@@ -98,7 +98,7 @@ class SettingsActivity : Activity() {
                 val sw = this
                 setOnCheckedChangeListener { _, on ->
                     if (guard) return@setOnCheckedChangeListener
-                    if (on && !AdGate.isFree(this@SettingsActivity)) {
+                    if (on && !free && !AdGate.isFree(this@SettingsActivity)) {
                         // Chưa được bật: trả về tắt, xem quảng cáo xong mới bật
                         guard = true; sw.isChecked = false; guard = false
                         AdGate.require(this@SettingsActivity, onGranted = {
@@ -144,7 +144,7 @@ class SettingsActivity : Activity() {
         }
         root.addView(intervalBtn)
         root.addView(toggle(R.string.osd_graphs, Osd.GRAPHS, false))
-        for (d in Osd.all) root.addView(toggle(d.label, Osd.key(d.id), d.def))
+        for (d in Osd.all) root.addView(toggle(d.label, Osd.key(d.id), d.def, free = d.id in Osd.FREE_IDS))
 
         // ---- Thanh trạng thái ----
         root.addView(section(getString(R.string.settings_section_status)))
