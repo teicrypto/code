@@ -13,6 +13,12 @@ android {
         targetSdk = 36
         versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
         versionName = "1.0"
+        // SHA-256 chữ ký hợp lệ của app (nhiều giá trị cách nhau dấu phẩy). Để trống = không kiểm tra.
+        buildConfigField("String", "CERT_SHA256", "\"${System.getenv("EXPECTED_CERT_SHA256") ?: ""}\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     // Khóa ký cố định cho bản debug: mọi bản build đều cùng chữ ký nên cài đè lên bản cũ được,

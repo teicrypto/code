@@ -44,9 +44,9 @@ object PlayBilling {
 
     /** Premium từ Google Play (kể cả bản nhớ tạm), chưa tính gói do máy chủ cấp. */
     fun isPremium(c: Context): Boolean {
+        if (!Guard.trusted(c)) return false // APK bị đóng gói lại/chữ ký lạ: không công nhận Premium
         if (active) return true
-        val sp = Prefs.sp(c)
-        return sp.getBoolean(KEY_OK, false) && System.currentTimeMillis() - sp.getLong(KEY_AT, 0L) < OFFLINE_MS
+        return Guard.getBool(c, KEY_OK, false) && System.currentTimeMillis() - Guard.getLong(c, KEY_AT, 0L) < OFFLINE_MS
     }
 
     /** Premium: lấy từ Google Play (gắn với tài khoản Google Play của người dùng). */
@@ -125,7 +125,8 @@ object PlayBilling {
         }
         if (ok || authoritative) {
             active = ok
-            Prefs.sp(app).edit().putBoolean(KEY_OK, ok).putLong(KEY_AT, System.currentTimeMillis()).apply()
+            Guard.putBool(app, KEY_OK, ok)
+            Guard.putLong(app, KEY_AT, System.currentTimeMillis())
             changed()
         }
     }

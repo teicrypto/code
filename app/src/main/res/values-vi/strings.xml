@@ -229,8 +229,8 @@
     <string name="acc_loading">Đang tải…</string>
     <string name="acc_switch_to_register">Chưa có tài khoản? Đăng ký</string>
     <string name="acc_switch_to_login">Đã có tài khoản? Đăng nhập</string>
-    <string name="ad_gate_title">Xem quảng cáo để bật</string>
-    <string name="ad_gate_msg">Xem một quảng cáo ngắn để bật tính năng này. Sau đó bạn có thể bật tắt thoải mái một thời gian mà không phải xem thêm.</string>
+    <string name="ad_gate_title">Mở khoá tính năng</string>
+    <string name="ad_gate_msg">Xem một quảng cáo ngắn để bật, hoặc dùng Premium để loại bỏ quảng cáo và mở khoá toàn bộ.</string>
     <string name="ad_gate_watch">Xem quảng cáo</string>
     <string name="ad_gate_cancel">Hủy</string>
     <string name="ad_not_ready">Quảng cáo chưa sẵn sàng, vui lòng thử lại sau giây lát.</string>
@@ -251,4 +251,9 @@
     <string name="premium_error">Không hoàn tất được giao dịch. Vui lòng thử lại.</string>
     <string name="proc_need_adb_app">CPU/RAM từng ứng dụng cần kết nối Shizuku. Bấm nút bên dưới để thiết lập.</string>
     <string name="hw_refresh">Làm mới</string>
+    <string name="ad_gate_premium">Dùng Premium</string>
+    <string name="ad_need_internet">Vui lòng bật mạng để sử dụng tính năng này.</string>
+    <string name="ad_loading">Đang tải quảng cáo…</string>
+    <string name="ad_not_ready_fmt">Hiện chưa có quảng cáo. Hãy thử lại (%1$d/%2$d).</string>
+    <string name="ad_unlock_no_ad">Không có quảng cáo, đã mở khoá tính năng.</string>
 </resources>

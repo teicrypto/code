@@ -229,8 +229,8 @@
     <string name="acc_loading">加载中…</string>
     <string name="acc_switch_to_register">没有账户？注册</string>
     <string name="acc_switch_to_login">已有账户？登录</string>
-    <string name="ad_gate_title">观看广告以开启</string>
-    <string name="ad_gate_msg">观看一段简短广告即可开启此功能。之后一段时间内可随意开关，无需再看广告。</string>
+    <string name="ad_gate_title">解锁此功能</string>
+    <string name="ad_gate_msg">观看一段简短广告即可开启，或使用高级版去除广告并解锁全部功能。</string>
     <string name="ad_gate_watch">观看广告</string>
     <string name="ad_gate_cancel">取消</string>
     <string name="ad_not_ready">广告尚未准备好，请稍后再试。</string>
@@ -251,4 +251,9 @@
     <string name="premium_error">无法完成交易，请重试。</string>
     <string name="proc_need_adb_app">查看各应用的 CPU/内存需要连接 Shizuku。点击下方按钮进行设置。</string>
     <string name="hw_refresh">刷新</string>
+    <string name="ad_gate_premium">使用高级版</string>
+    <string name="ad_need_internet">请开启网络后再使用此功能。</string>
+    <string name="ad_loading">正在加载广告…</string>
+    <string name="ad_not_ready_fmt">暂时没有可用广告，请重试（%1$d/%2$d）。</string>
+    <string name="ad_unlock_no_ad">暂无广告，已为您解锁。</string>
 </resources>
