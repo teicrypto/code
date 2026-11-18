@@ -35,6 +35,7 @@ object PlayBilling {
     @Volatile private var ready = false
     @Volatile private var details: ProductDetails? = null
     @Volatile private var active = false
+    @Volatile private var lastErr = "chưa kết nối"
     private val main = Handler(Looper.getMainLooper())
     private val listeners = CopyOnWriteArrayList<Runnable>()
 
@@ -76,7 +77,7 @@ object PlayBilling {
                     ready = true
                     queryDetails()
                     refresh()
-                }
+                } else lastErr = "setup ${r.responseCode} ${r.debugMessage}"
             }
             override fun onBillingServiceDisconnected() { ready = false }
         })
@@ -95,8 +96,9 @@ object PlayBilling {
         cl.queryProductDetailsAsync(p) { r, res ->
             if (r.responseCode == BillingClient.BillingResponseCode.OK) {
                 details = res.productDetailsList.firstOrNull()
+                lastErr = if (details == null) "không có sản phẩm $PRODUCT_ID (kiểm tra cài từ Play/bản AAB mới)" else "ok"
                 changed()
-            }
+            } else lastErr = "query ${r.responseCode} ${r.debugMessage}"
         }
     }
 
@@ -144,8 +146,9 @@ object PlayBilling {
         val d = details
         val offer = d?.subscriptionOfferDetails?.firstOrNull()
         if (cl == null || d == null || offer == null) {
-            Toast.makeText(a, R.string.premium_not_ready, Toast.LENGTH_LONG).show()
+            Toast.makeText(a, a.getString(R.string.premium_not_ready) + "\n[" + lastErr + "]", Toast.LENGTH_LONG).show()
             init(a)
+            if (ready) queryDetails()
             return
         }
         val pd = BillingFlowParams.ProductDetailsParams.newBuilder()
