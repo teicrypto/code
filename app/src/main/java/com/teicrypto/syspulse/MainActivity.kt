@@ -29,6 +29,24 @@ import com.google.android.gms.ads.MobileAds
  * Mọi thông số, biểu đồ và kết nối ADB nằm trong popup.
  */
 class MainActivity : Activity() {
+    private fun dpx(n: Int) = (n * resources.displayMetrics.density).toInt()
+
+    /** Thêm nút xếp dọc: đầy chiều ngang, có khoảng cách trên/dưới để không dính nhau trên mọi máy. */
+    private fun LinearLayout.addBtn(b: Button) {
+        b.minHeight = dpx(48); b.minimumHeight = dpx(48)
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.setMargins(0, dpx(6), 0, dpx(6))
+        addView(b, lp)
+    }
+
+    /** Thêm nút xếp ngang: tự co giãn đều, có khoảng cách xung quanh. */
+    private fun LinearLayout.addBtnRow(b: Button) {
+        b.minHeight = dpx(48); b.minimumHeight = dpx(48)
+        val lp = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        lp.setMargins(dpx(4), dpx(6), dpx(4), dpx(6))
+        addView(b, lp)
+    }
+
 
     override fun onContentChanged() {
         super.onContentChanged()
@@ -121,9 +139,9 @@ class MainActivity : Activity() {
             textSize = 13f
             setTextColor(Color.LTGRAY)
         })
-        val langRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        val langRow = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; weightSum = 3f }
         for ((code, label) in listOf("vi" to "Tiếng Việt", "en" to "English", "zh" to "中文")) {
-            langRow.addView(Button(this).apply {
+            langRow.addBtnRow(Button(this).apply {
                 text = label
                 isEnabled = Prefs.lang(this@MainActivity) != code
                 setOnClickListener {
@@ -142,7 +160,7 @@ class MainActivity : Activity() {
         }
         premBtn = Button(this)
         root.addView(premText)
-        root.addView(premBtn)
+        root.addBtn(premBtn)
 
         permStatus = TextView(this).apply {
             textSize = 15f
@@ -159,30 +177,30 @@ class MainActivity : Activity() {
                 startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
             }
         }
-        root.addView(permBtn)
+        root.addBtn(permBtn)
 
         openBtn = Button(this).apply {
             text = getString(R.string.onb_open_popup)
             setOnClickListener { startPopup() }
         }
-        root.addView(openBtn)
+        root.addBtn(openBtn)
 
         // Hai màn hình trong app (có banner ở đáy)
-        root.addView(Button(this).apply {
+        root.addBtn(Button(this).apply {
             text = getString(R.string.tab_proc)
             setOnClickListener { startActivity(Intent(this@MainActivity, ProcessesActivity::class.java)) }
         })
-        root.addView(Button(this).apply {
+        root.addBtn(Button(this).apply {
             text = getString(R.string.tab_hw)
             setOnClickListener { startActivity(Intent(this@MainActivity, DeviceInfoActivity::class.java)) }
         })
 
-        root.addView(Button(this).apply {
+        root.addBtn(Button(this).apply {
             text = getString(R.string.btn_open_adb)
             setOnClickListener { startActivity(Intent(this@MainActivity, AdbSetupActivity::class.java)) }
         })
 
-        root.addView(Button(this).apply {
+        root.addBtn(Button(this).apply {
             text = getString(R.string.onb_stop_popup)
             setOnClickListener { stopService(Intent(this@MainActivity, OverlayService::class.java)) }
         })
@@ -194,19 +212,19 @@ class MainActivity : Activity() {
             setPadding(0, pad, 0, pad)
         })
 
-        val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
-        row.addView(Button(this).apply {
+        val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; weightSum = 3f }
+        row.addBtnRow(Button(this).apply {
             text = getString(R.string.btn_start_updates)
             setOnClickListener { startForegroundService(Intent(this@MainActivity, StatsService::class.java)) }
         })
-        row.addView(Button(this).apply {
+        row.addBtnRow(Button(this).apply {
             text = getString(R.string.btn_stop)
             setOnClickListener {
                 Prefs.sp(this@MainActivity).edit().putBoolean(Prefs.STATUS_BAR, false).apply()
                 stopService(Intent(this@MainActivity, StatsService::class.java))
             }
         })
-        row.addView(Button(this).apply {
+        row.addBtnRow(Button(this).apply {
             text = getString(R.string.btn_settings)
             setOnClickListener { startActivity(Intent(this@MainActivity, SettingsActivity::class.java)) }
         })
